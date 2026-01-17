@@ -1,0 +1,237 @@
+# IO Cable - 20-Pin Twisted Pair Interconnect
+# ============================================
+# This file is WireViz-compatible AND contains extended metadata.
+# - Run `wireviz io-cable-20pin.yml` for quick diagram only
+# - Run `wvdoc build io-cable-20pin.yml` for full documentation package
+#
+# NOTES:
+# - Pin arrangement on XADRP-20V: Odd pins (1,3,5...) on TOP row, even pins (2,4,6...) on BOTTOM row
+# - Twisted pairs MUST be connected to adjacent pin numbers (1-2, 3-4, 5-6, etc.)
+
+# =============================================================================
+# EXTENDED METADATA (WireViz ignores this section)
+# =============================================================================
+metadata:
+  id: IO-CABLE-20P
+  title: "20-Pin IO Cable - Twisted Pair"
+  revision: A
+  date: 2026-01-17
+  company: Whatever Together
+  client: Acme
+  project: Generic IO
+  description: |
+    General-purpose 20-pin IO cable using pre-sheathed 10-pair twisted pair cable.
+    Suitable for mixed differential signals and power distribution.
+  custom_fields:
+    length_tolerance: "+/- 25mm"
+    cable_type: "Pre-sheathed 10-pair twisted pair"
+
+# =============================================================================
+# PARTS LIBRARY (WireViz ignores this section)
+# Used by wvdoc for BOM generation with alternates and supplier info
+# =============================================================================
+parts:
+  JST-XADRP-20V:
+    manufacturer: JST
+    mpn: XADRP-20V
+    description: "XAD Series 20-position receptacle housing, 2.5mm pitch, dual row"
+    alternates:
+      - manufacturer: Shenzhen Gangpu Electronics
+        mpn: GT-A2508HM-220W01
+        supplier: LCSC
+        spn: C42419218
+    fields:
+      digikey_pn: "455-2168-ND"
+      lcsc_pn: "C565401"
+
+  JST-SXA-001T-P0.6:
+    manufacturer: JST
+    mpn: SXA-001T-P0.6
+    description: "XAD Series crimp contact, tin plated, 28-30 AWG"
+    fields:
+      digikey_pn: "455-1561-1-ND"
+      lcsc_pn: "C265094"
+
+  CABLE-10PR-28AWG:
+    manufacturer: Generic
+    mpn: 10PR-28AWG-TP
+    description: "10-pair twisted pair cable, 28 AWG, PVC jacket, unshielded"
+
+  HEATSHRINK-6MM:
+    manufacturer: Generic
+    mpn: HST-6MM-3:1-BLK
+    description: "Heat shrink tubing, 6mm ID, 3:1 ratio, black"
+
+# =============================================================================
+# ACCESSORIES (WireViz ignores this section)
+# =============================================================================
+accessories:
+  - type: heatshrink
+    part: HEATSHRINK-6MM
+    qty: 2
+    qty_unit: pcs
+    location: "Cable exits at J1 and J2"
+
+  - type: contact
+    part: JST-SXA-001T-P0.6
+    qty: 40
+    qty_unit: pcs
+    location: "20 per connector"
+
+# =============================================================================
+# CONNECTORS (WireViz processes this)
+# =============================================================================
+connectors:
+  J1:
+    type: JST XAD
+    subtype: 20-pos receptacle
+    pn: JST-XADRP-20V
+    mpn: XADRP-20V
+    manufacturer: JST
+    pincount: 20
+    pinlabels:
+      - DIFF_A+      # Pin 1  - TOP ROW    | Pair 1
+      - DIFF_A-      # Pin 2  - BOTTOM ROW | Pair 1
+      - DIFF_B+      # Pin 3  - TOP ROW    | Pair 2
+      - DIFF_B-      # Pin 4  - BOTTOM ROW | Pair 2
+      - DIFF_C+      # Pin 5  - TOP ROW    | Pair 3
+      - DIFF_C-      # Pin 6  - BOTTOM ROW | Pair 3
+      - DIFF_D+      # Pin 7  - TOP ROW    | Pair 4
+      - DIFF_D-      # Pin 8  - BOTTOM ROW | Pair 4
+      - GPIO_1       # Pin 9  - TOP ROW    | Pair 5
+      - GPIO_2       # Pin 10 - BOTTOM ROW | Pair 5
+      - GPIO_3       # Pin 11 - TOP ROW    | Pair 6
+      - GPIO_4       # Pin 12 - BOTTOM ROW | Pair 6
+      - SPI_CLK      # Pin 13 - TOP ROW    | Pair 7
+      - SPI_MOSI     # Pin 14 - BOTTOM ROW | Pair 7
+      - SPI_MISO     # Pin 15 - TOP ROW    | Pair 8
+      - SPI_CS       # Pin 16 - BOTTOM ROW | Pair 8
+      - +5V          # Pin 17 - TOP ROW    | Pair 9
+      - GND          # Pin 18 - BOTTOM ROW | Pair 9
+      - +3V3         # Pin 19 - TOP ROW    | Pair 10
+      - GND          # Pin 20 - BOTTOM ROW | Pair 10
+    notes: |
+      Pin arrangement: Odd pins on TOP row, even pins on BOTTOM row.
+      Looking at connector face (mating side).
+
+  J2:
+    type: JST XAD
+    subtype: 20-pos receptacle
+    pn: JST-XADRP-20V
+    mpn: XADRP-20V
+    manufacturer: JST
+    pincount: 20
+    pinlabels:
+      - DIFF_A+
+      - DIFF_A-
+      - DIFF_B+
+      - DIFF_B-
+      - DIFF_C+
+      - DIFF_C-
+      - DIFF_D+
+      - DIFF_D-
+      - GPIO_1
+      - GPIO_2
+      - GPIO_3
+      - GPIO_4
+      - SPI_CLK
+      - SPI_MOSI
+      - SPI_MISO
+      - SPI_CS
+      - +5V
+      - GND
+      - +3V3
+      - GND
+
+# =============================================================================
+# CABLES (WireViz processes this)
+# =============================================================================
+cables:
+  W1:
+    pn: CABLE-10PR-28AWG
+    mpn: 10PR-28AWG-TP
+    manufacturer: Generic
+    wirecount: 20
+    gauge: 28 AWG
+    length: 150 mm
+    colors:
+      - BU       # Core 1  - DIFF_A+  | Pair 1
+      - BU-WH    # Core 2  - DIFF_A-  | Pair 1
+      - OG       # Core 3  - DIFF_B+  | Pair 2
+      - OG-WH    # Core 4  - DIFF_B-  | Pair 2
+      - GN       # Core 5  - DIFF_C+  | Pair 3
+      - GN-WH    # Core 6  - DIFF_C-  | Pair 3
+      - BN       # Core 7  - DIFF_D+  | Pair 4
+      - BN-WH    # Core 8  - DIFF_D-  | Pair 4
+      - GY       # Core 9  - GPIO_1   | Pair 5
+      - GY-WH    # Core 10 - GPIO_2   | Pair 5
+      - VT       # Core 11 - GPIO_3   | Pair 6
+      - VT-WH    # Core 12 - GPIO_4   | Pair 6
+      - YE       # Core 13 - SPI_CLK  | Pair 7
+      - YE-WH    # Core 14 - SPI_MOSI | Pair 7
+      - PK       # Core 15 - SPI_MISO | Pair 8
+      - PK-WH    # Core 16 - SPI_CS   | Pair 8
+      - RD       # Core 17 - +5V      | Pair 9
+      - BK       # Core 18 - GND      | Pair 9
+      - WH       # Core 19 - +3V3     | Pair 10
+      - BK-WH    # Core 20 - GND      | Pair 10
+    wirelabels:
+      - DIFF_A+
+      - DIFF_A-
+      - DIFF_B+
+      - DIFF_B-
+      - DIFF_C+
+      - DIFF_C-
+      - DIFF_D+
+      - DIFF_D-
+      - GPIO_1
+      - GPIO_2
+      - GPIO_3
+      - GPIO_4
+      - SPI_CLK
+      - SPI_MOSI
+      - SPI_MISO
+      - SPI_CS
+      - +5V
+      - GND
+      - +3V3
+      - GND
+    notes: |
+      10-pair twisted pair cable. Pairs MUST be kept together on adjacent pins.
+      Pair arrangement is critical for differential signal integrity.
+
+# =============================================================================
+# CONNECTIONS (WireViz processes this)
+# Straight-through 1:1 wiring
+# =============================================================================
+connections:
+  -
+    - J1: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+    - W1: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+    - J2: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+
+# =============================================================================
+# EXTENDED CONNECTION INFO (WireViz ignores this section)
+# Used by wvdoc for wiring table generation with pair groups
+# =============================================================================
+connection_info:
+  - { from: J1, pin: 1,  to: J2, cable: W1, core: 1,  label: DIFF_A+,  pair: 1,  notes: "Diff pair 1+" }
+  - { from: J1, pin: 2,  to: J2, cable: W1, core: 2,  label: DIFF_A-,  pair: 1,  notes: "Diff pair 1-" }
+  - { from: J1, pin: 3,  to: J2, cable: W1, core: 3,  label: DIFF_B+,  pair: 2,  notes: "Diff pair 2+" }
+  - { from: J1, pin: 4,  to: J2, cable: W1, core: 4,  label: DIFF_B-,  pair: 2,  notes: "Diff pair 2-" }
+  - { from: J1, pin: 5,  to: J2, cable: W1, core: 5,  label: DIFF_C+,  pair: 3,  notes: "Diff pair 3+" }
+  - { from: J1, pin: 6,  to: J2, cable: W1, core: 6,  label: DIFF_C-,  pair: 3,  notes: "Diff pair 3-" }
+  - { from: J1, pin: 7,  to: J2, cable: W1, core: 7,  label: DIFF_D+,  pair: 4,  notes: "Diff pair 4+" }
+  - { from: J1, pin: 8,  to: J2, cable: W1, core: 8,  label: DIFF_D-,  pair: 4,  notes: "Diff pair 4-" }
+  - { from: J1, pin: 9,  to: J2, cable: W1, core: 9,  label: GPIO_1,   pair: 5,  notes: "GPIO pair" }
+  - { from: J1, pin: 10, to: J2, cable: W1, core: 10, label: GPIO_2,   pair: 5,  notes: "GPIO pair" }
+  - { from: J1, pin: 11, to: J2, cable: W1, core: 11, label: GPIO_3,   pair: 6,  notes: "GPIO pair" }
+  - { from: J1, pin: 12, to: J2, cable: W1, core: 12, label: GPIO_4,   pair: 6,  notes: "GPIO pair" }
+  - { from: J1, pin: 13, to: J2, cable: W1, core: 13, label: SPI_CLK,  pair: 7,  notes: "SPI pair" }
+  - { from: J1, pin: 14, to: J2, cable: W1, core: 14, label: SPI_MOSI, pair: 7,  notes: "SPI pair" }
+  - { from: J1, pin: 15, to: J2, cable: W1, core: 15, label: SPI_MISO, pair: 8,  notes: "SPI pair" }
+  - { from: J1, pin: 16, to: J2, cable: W1, core: 16, label: SPI_CS,   pair: 8,  notes: "SPI pair" }
+  - { from: J1, pin: 17, to: J2, cable: W1, core: 17, label: +5V,      pair: 9,  notes: "Power: +5V" }
+  - { from: J1, pin: 18, to: J2, cable: W1, core: 18, label: GND,      pair: 9,  notes: "Power: GND" }
+  - { from: J1, pin: 19, to: J2, cable: W1, core: 19, label: +3V3,     pair: 10, notes: "Power: +3V3" }
+  - { from: J1, pin: 20, to: J2, cable: W1, core: 20, label: GND,      pair: 10, notes: "Power: GND" }
