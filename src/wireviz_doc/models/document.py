@@ -5,9 +5,10 @@ structure, including document metadata and the complete harness specification
 that aggregates all components, connections, and accessories.
 """
 
-from __future__ import annotations
+# NOTE: Not using `from __future__ import annotations` here due to
+# Pydantic compatibility issues with datetime types in Python 3.14+
 
-from datetime import date, datetime
+import datetime as dt
 from typing import Any, Dict, List, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -24,50 +25,95 @@ class DocumentMeta(BaseModel):
     harness documentation including revision control, authorship,
     and project association.
 
+    See schema.py for the complete list of available fields and their
+    usage in SVG templates.
+
     Attributes:
         id: Unique document identifier (e.g., document number).
         title: Human-readable document title.
         revision: Document revision string (e.g., "A", "1.0", "Rev B").
         date: Document date (creation or last revision).
-        author: Name of the document author.
-        approver: Optional name of the document approver.
-        project: Optional project name or number.
+        author: Name of the document author/drafter.
+        checker: Name of the person who checked/reviewed the document.
+        approver: Name of the document approver.
+        company: Company or organization name.
+        department: Department or team name.
+        client: Client or customer name.
+        project: Project name or number.
+        description: Detailed document description.
+        scale: Drawing scale (default: "NTS" for not to scale).
+        units: Primary units (default: "mm").
+        sheet: Current sheet number (default: 1).
+        total_sheets: Total number of sheets (default: 1).
         custom_fields: Additional metadata as key-value pairs.
-        description: Optional detailed document description.
-        company: Optional company name.
-        department: Optional department or team name.
     """
 
     model_config = ConfigDict(
         str_strip_whitespace=True,
         populate_by_name=True,
+        extra="allow",  # Allow additional fields for forward compatibility
     )
 
+    # -------------------------------------------------------------------------
+    # REQUIRED FIELDS
+    # -------------------------------------------------------------------------
     id: str = Field(..., description="Unique document identifier")
     title: str = Field(..., description="Human-readable document title")
     revision: str = Field(..., description="Document revision string")
-    date: Union[date, datetime, str] = Field(
+    date: Union[dt.date, dt.datetime, str] = Field(
         ..., description="Document date (creation or last revision)"
     )
-    author: str = Field(..., description="Document author name")
+
+    # -------------------------------------------------------------------------
+    # AUTHORSHIP & APPROVAL (optional)
+    # -------------------------------------------------------------------------
+    author: Optional[str] = Field(
+        default=None, description="Document author/drafter name"
+    )
+    checker: Optional[str] = Field(
+        default=None, description="Document checker/reviewer name"
+    )
     approver: Optional[str] = Field(
         default=None, description="Document approver name"
     )
-    project: Optional[str] = Field(
-        default=None, description="Project name or number"
-    )
-    custom_fields: Dict[str, Any] = Field(
-        default_factory=dict, description="Additional metadata key-value pairs"
-    )
-    description: Optional[str] = Field(
-        default=None, description="Detailed document description"
-    )
+
+    # -------------------------------------------------------------------------
+    # ORGANIZATION (optional)
+    # -------------------------------------------------------------------------
     company: Optional[str] = Field(default=None, description="Company name")
     department: Optional[str] = Field(
         default=None, description="Department or team name"
     )
+    client: Optional[str] = Field(
+        default=None, description="Client or customer name"
+    )
 
-    @field_validator("id", "title", "revision", "author")
+    # -------------------------------------------------------------------------
+    # PROJECT INFORMATION (optional)
+    # -------------------------------------------------------------------------
+    project: Optional[str] = Field(
+        default=None, description="Project name or number"
+    )
+    description: Optional[str] = Field(
+        default=None, description="Detailed document description"
+    )
+
+    # -------------------------------------------------------------------------
+    # DRAWING SPECIFICS (optional with defaults)
+    # -------------------------------------------------------------------------
+    scale: str = Field(default="NTS", description="Drawing scale")
+    units: str = Field(default="mm", description="Primary units")
+    sheet: int = Field(default=1, description="Current sheet number")
+    total_sheets: int = Field(default=1, description="Total number of sheets")
+
+    # -------------------------------------------------------------------------
+    # CUSTOM EXTENSION FIELDS
+    # -------------------------------------------------------------------------
+    custom_fields: Dict[str, Any] = Field(
+        default_factory=dict, description="Additional metadata key-value pairs"
+    )
+
+    @field_validator("id", "title", "revision")
     @classmethod
     def validate_required_strings(cls, v: str, info: Any) -> str:
         """Ensure required string fields are not empty."""
@@ -77,9 +123,9 @@ class DocumentMeta(BaseModel):
 
     @field_validator("date", mode="before")
     @classmethod
-    def parse_date(cls, v: Union[date, datetime, str]) -> Union[date, datetime, str]:
+    def parse_date(cls, v: Union[dt.date, dt.datetime, str]) -> Union[dt.date, dt.datetime, str]:
         """Parse date from various formats."""
-        if isinstance(v, (date, datetime)):
+        if isinstance(v, (dt.date, dt.datetime)):
             return v
         if isinstance(v, str):
             v = v.strip()
@@ -88,14 +134,17 @@ class DocumentMeta(BaseModel):
             # Try common date formats
             for fmt in ["%Y-%m-%d", "%Y/%m/%d", "%d-%m-%Y", "%d/%m/%Y", "%m/%d/%Y"]:
                 try:
-                    return datetime.strptime(v, fmt).date()
+                    return dt.datetime.strptime(v, fmt).date()
                 except ValueError:
                     continue
             # If no format matches, return as string for flexibility
             return v
         raise ValueError(f"Invalid date value: {v!r}")
 
-    @field_validator("approver", "project", "description", "company", "department", mode="before")
+    @field_validator(
+        "author", "checker", "approver", "company", "department",
+        "client", "project", "description", mode="before"
+    )
     @classmethod
     def strip_optional_strings(cls, v: Optional[str]) -> Optional[str]:
         """Strip whitespace from optional string fields."""
@@ -113,7 +162,7 @@ class DocumentMeta(BaseModel):
         Returns:
             The formatted date string.
         """
-        if isinstance(self.date, (date, datetime)):
+        if isinstance(self.date, (dt.date, dt.datetime)):
             return self.date.strftime(fmt)
         return str(self.date)
 
