@@ -21,7 +21,7 @@ dependencies = [
     "beautifulsoup4>=4.12",
     "cairosvg>=2.7",
     "wireviz>=0.4",
-    "typer>=0.9",
+    "typer[all]>=0.9",  # includes rich
 ]
 
 [project.optional-dependencies]

@@ -232,6 +232,8 @@ Browse the [examples/](examples/) directory for complete working examples:
 - [Schema Reference](docs/schema.md) - Complete YAML schema documentation
 - [CLI Reference](docs/cli.md) - Detailed command-line interface guide
 - [CI/CD Integration](docs/integration.md) - GitHub Actions, pre-commit hooks
+- [Custom Templates Tutorial](docs/tutorial-custom-templates.md) - Design branded output templates
+- [Template Design Guide](docs/template-design.md) - Advanced template customization
 
 ## Contributing
 

@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  WireViz Doc - A4 Landscape Template (Editable)
+
+  This template is designed for editing in Inkscape or Illustrator.
+
+  IMPORTANT: When editing, preserve the element IDs. The rendering
+  engine uses these IDs to insert dynamic content.
+
+  Required IDs:
+    - doc-id, doc-title, doc-revision, doc-date
+    - doc-author, doc-approver, doc-project, doc-sheet
+    - diagram-area, bom-area, wiring-area, notes-area
+
+  To edit: Open in Inkscape, modify layout/styling, save as Plain SVG.
+-->
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   width="297mm"
+   height="210mm"
+   viewBox="0 0 297 210"
+   version="1.1">
+
+  <defs>
+    <style type="text/css"><![CDATA[
+      /* Base styles - modify these to change appearance */
+      .border { fill: none; stroke: #000000; stroke-width: 0.5; }
+      .border-thin { fill: none; stroke: #000000; stroke-width: 0.25; }
+      .border-medium { fill: none; stroke: #000000; stroke-width: 0.35; }
+
+      .label {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 2.5px;
+        fill: #666666;
+        font-weight: normal;
+      }
+      .value {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 3.5px;
+        fill: #000000;
+        font-weight: bold;
+      }
+      .title-large {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 6px;
+        fill: #000000;
+        font-weight: bold;
+      }
+
+      .area-marker {
+        fill: #f5f5f5;
+        stroke: #cccccc;
+        stroke-width: 0.25;
+        stroke-dasharray: 2,1;
+      }
+      .area-label {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 4px;
+        fill: #999999;
+        text-anchor: middle;
+      }
+
+      .table-header {
+        fill: #e8e8e8;
+      }
+      .table-text {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 2.5px;
+        fill: #000000;
+      }
+      .table-text-mono {
+        font-family: Consolas, "Liberation Mono", monospace;
+        font-size: 2.5px;
+        fill: #000000;
+      }
+    ]]></style>
+  </defs>
+
+  <!-- Page border -->
+  <rect class="border" x="5" y="5" width="287" height="200" />
+
+  <!-- ============================================================
+       DIAGRAM AREA
+       This rectangle defines where the WireViz diagram is inserted.
+       The diagram will be scaled to fit within these bounds.
+       ============================================================ -->
+  <g id="diagram-area-group">
+    <rect
+      id="diagram-area"
+      class="area-marker"
+      x="8"
+      y="8"
+      width="200"
+      height="135" />
+    <text class="area-label" x="108" y="75">
+      DIAGRAM AREA
+    </text>
+    <text class="area-label" x="108" y="80" style="font-size: 2.5px;">
+      (id="diagram-area")
+    </text>
+  </g>
+
+  <!-- ============================================================
+       BOM TABLE AREA
+       Bill of materials table is inserted here.
+       ============================================================ -->
+  <g id="bom-area-group">
+    <rect
+      id="bom-area"
+      class="area-marker"
+      x="8"
+      y="146"
+      width="138"
+      height="40" />
+    <text class="area-label" x="77" y="165">
+      BOM TABLE
+    </text>
+    <text class="area-label" x="77" y="170" style="font-size: 2.5px;">
+      (id="bom-area")
+    </text>
+  </g>
+
+  <!-- ============================================================
+       NOTES AREA
+       Optional notes section.
+       ============================================================ -->
+  <g id="notes-area-group">
+    <rect
+      id="notes-area"
+      class="area-marker"
+      x="211"
+      y="8"
+      width="78"
+      height="50" />
+    <text class="area-label" x="250" y="32">
+      NOTES
+    </text>
+    <text class="area-label" x="250" y="37" style="font-size: 2.5px;">
+      (id="notes-area")
+    </text>
+  </g>
+
+  <!-- ============================================================
+       REVISION HISTORY AREA
+       Optional revision history table.
+       ============================================================ -->
+  <g id="revision-area-group">
+    <rect
+      id="revision-area"
+      class="area-marker"
+      x="211"
+      y="61"
+      width="78"
+      height="35" />
+    <text class="area-label" x="250" y="77">
+      REVISION HISTORY
+    </text>
+    <text class="area-label" x="250" y="82" style="font-size: 2.5px;">
+      (id="revision-area")
+    </text>
+  </g>
+
+  <!-- ============================================================
+       TITLE BLOCK
+       Standard engineering drawing title block.
+       All text elements have IDs for dynamic content replacement.
+       ============================================================ -->
+  <g id="title-block">
+    <!-- Title block outer border -->
+    <rect class="border-medium" x="149" y="146" width="140" height="56" />
+
+    <!-- Horizontal dividers -->
+    <line class="border-thin" x1="149" y1="158" x2="289" y2="158" />
+    <line class="border-thin" x1="149" y1="170" x2="289" y2="170" />
+    <line class="border-thin" x1="149" y1="182" x2="289" y2="182" />
+    <line class="border-thin" x1="149" y1="190" x2="289" y2="190" />
+
+    <!-- Vertical dividers -->
+    <line class="border-thin" x1="189" y1="146" x2="189" y2="170" />
+    <line class="border-thin" x1="219" y1="170" x2="219" y2="202" />
+    <line class="border-thin" x1="254" y1="170" x2="254" y2="190" />
+    <line class="border-thin" x1="269" y1="190" x2="269" y2="202" />
+
+    <!-- Row 1: Logo / Company area -->
+    <g id="logo-area">
+      <text class="label" x="152" y="151">COMPANY / LOGO</text>
+      <!-- Replace this text with your company logo:
+           1. Delete this text element
+           2. Import your logo (File > Import)
+           3. Position and scale to fit this area
+           4. Optionally set id="company-logo" on the logo -->
+      <text class="value" x="152" y="155" id="doc-company">Your Company Name</text>
+    </g>
+
+    <!-- Row 1: Project -->
+    <text class="label" x="192" y="151">PROJECT</text>
+    <text class="value" x="192" y="156" id="doc-project">PROJECT-001</text>
+
+    <!-- Row 2: Document Title (spans full width) -->
+    <text class="label" x="152" y="163">TITLE</text>
+    <text class="title-large" x="152" y="168" id="doc-title">Harness Assembly Drawing Title</text>
+
+    <!-- Row 3: Document ID -->
+    <text class="label" x="152" y="175">DOCUMENT ID</text>
+    <text class="value" x="152" y="180" id="doc-id">HAR-0001</text>
+
+    <!-- Row 3: Revision -->
+    <text class="label" x="222" y="175">REV</text>
+    <text class="value" x="222" y="180" id="doc-revision">A</text>
+
+    <!-- Row 3: Sheet -->
+    <text class="label" x="257" y="175">SHEET</text>
+    <text class="value" x="257" y="180" id="doc-sheet">1 of 1</text>
+
+    <!-- Row 4: Date -->
+    <text class="label" x="152" y="187">DATE</text>
+    <text class="value" x="152" y="192" id="doc-date">2026-01-17</text>
+
+    <!-- Row 4: Scale (optional) -->
+    <text class="label" x="222" y="187">SCALE</text>
+    <text class="value" x="222" y="192" id="doc-scale">N/A</text>
+
+    <!-- Row 4: Units (optional) -->
+    <text class="label" x="257" y="187">UNITS</text>
+    <text class="value" x="257" y="192" id="doc-units">mm</text>
+
+    <!-- Row 5: Author -->
+    <text class="label" x="152" y="195">DRAWN BY</text>
+    <text class="value" x="152" y="200" id="doc-author">Author Name</text>
+
+    <!-- Row 5: Approver -->
+    <text class="label" x="222" y="195">APPROVED BY</text>
+    <text class="value" x="222" y="200" id="doc-approver">Approver Name</text>
+
+    <!-- Row 5: Approval Date -->
+    <text class="label" x="272" y="195">DATE</text>
+    <text class="value" x="272" y="200" id="doc-approval-date">-</text>
+  </g>
+
+  <!-- ============================================================
+       WIRING TABLE AREA (for multi-page or combined layouts)
+       If your harness has many connections, this may appear on page 2.
+       ============================================================ -->
+  <g id="wiring-area-group">
+    <rect
+      id="wiring-area"
+      class="area-marker"
+      x="211"
+      y="99"
+      width="78"
+      height="44" />
+    <text class="area-label" x="250" y="119">
+      WIRING TABLE
+    </text>
+    <text class="area-label" x="250" y="124" style="font-size: 2.5px;">
+      (or "See Sheet 2")
+    </text>
+    <text class="area-label" x="250" y="129" style="font-size: 2.5px;">
+      (id="wiring-area")
+    </text>
+  </g>
+
+  <!-- ============================================================
+       ZONE MARKERS (Optional)
+       Engineering drawing zone references for callouts.
+       Delete this group if not needed.
+       ============================================================ -->
+  <g id="zone-markers" style="opacity: 0.5;">
+    <!-- Horizontal zone labels (A-D) -->
+    <text class="label" x="3" y="45" style="text-anchor: middle; font-size: 2px;">A</text>
+    <text class="label" x="3" y="95" style="text-anchor: middle; font-size: 2px;">B</text>
+    <text class="label" x="3" y="145" style="text-anchor: middle; font-size: 2px;">C</text>
+    <text class="label" x="3" y="195" style="text-anchor: middle; font-size: 2px;">D</text>
+
+    <!-- Vertical zone labels (1-6) -->
+    <text class="label" x="30" y="4" style="text-anchor: middle; font-size: 2px;">1</text>
+    <text class="label" x="80" y="4" style="text-anchor: middle; font-size: 2px;">2</text>
+    <text class="label" x="130" y="4" style="text-anchor: middle; font-size: 2px;">3</text>
+    <text class="label" x="180" y="4" style="text-anchor: middle; font-size: 2px;">4</text>
+    <text class="label" x="230" y="4" style="text-anchor: middle; font-size: 2px;">5</text>
+    <text class="label" x="280" y="4" style="text-anchor: middle; font-size: 2px;">6</text>
+  </g>
+
+</svg>
