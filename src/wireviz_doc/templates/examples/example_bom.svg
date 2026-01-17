@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Bill of Materials (BOM) Table Template
+  =======================================
+  SVG template for rendering a Bill of Materials table in engineering drawings.
+
+  This template generates a professional BOM table with the following columns:
+    - Item: Sequential item number
+    - Part Number: Internal part number
+    - Manufacturer: Component manufacturer name
+    - MPN: Manufacturer part number
+    - Description: Component description
+    - Qty: Quantity required
+    - Alternates: Alternative part numbers (if applicable)
+
+  Required Jinja2 variables:
+    - bom: List of BOM items, each containing:
+        - item: Item number (integer)
+        - part_number: Internal part number (string)
+        - manufacturer: Manufacturer name (string)
+        - mpn: Manufacturer part number (string)
+        - description: Component description (string)
+        - qty: Quantity (integer or string with units)
+        - alternates: Alternative parts (string, optional)
+
+  Optional Jinja2 variables:
+    - bom_x: X position offset (default: 0)
+    - bom_y: Y position offset (default: 0)
+    - bom_width: Total table width in mm (default: 270)
+    - bom_title: Table title (default: "BILL OF MATERIALS")
+    - show_alternates: Whether to show alternates column (default: true)
+
+  Column widths (proportional, totaling bom_width):
+    - Item: 8mm
+    - Part Number: 35mm
+    - Manufacturer: 40mm
+    - MPN: 45mm
+    - Description: 82mm (or 117mm if no alternates)
+    - Qty: 15mm
+    - Alternates: 45mm (optional)
+
+  Row height: 6mm (header: 8mm)
+--><svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="270mm"
+     height="62mm"
+     viewBox="0 0 270 62">
+
+  <defs>
+    <!-- BOM Table Styles -->
+    <style type="text/css">
+      <![CDATA[
+        /* Table structure */
+        .bom-border {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.5;
+        }
+
+        .bom-border-heavy {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.7;
+        }
+
+        .bom-header-bg {
+          fill: #E8E8E8;
+          stroke: none;
+        }
+
+        .bom-row-even {
+          fill: #FFFFFF;
+          stroke: none;
+        }
+
+        .bom-row-odd {
+          fill: #F8F8F8;
+          stroke: none;
+        }
+
+        .bom-divider-v {
+          stroke: #000000;
+          stroke-width: 0.35;
+        }
+
+        .bom-divider-h {
+          stroke: #CCCCCC;
+          stroke-width: 0.25;
+        }
+
+        .bom-divider-header {
+          stroke: #000000;
+          stroke-width: 0.5;
+        }
+
+        /* Text styles */
+        .bom-title {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 4px;
+          font-weight: bold;
+          fill: #000000;
+          text-anchor: start;
+        }
+
+        .bom-header-text {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.8px;
+          font-weight: bold;
+          fill: #333333;
+          text-anchor: middle;
+        }
+
+        .bom-cell-text {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.5px;
+          fill: #000000;
+          text-anchor: start;
+        }
+
+        .bom-cell-text-center {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.5px;
+          fill: #000000;
+          text-anchor: middle;
+        }
+
+        .bom-cell-text-small {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.2px;
+          fill: #444444;
+          text-anchor: start;
+        }
+
+        .bom-item-num {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.8px;
+          font-weight: bold;
+          fill: #000000;
+          text-anchor: middle;
+        }
+
+        .bom-qty {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.8px;
+          font-weight: bold;
+          fill: #000000;
+          text-anchor: middle;
+        }
+      ]]>
+    </style>
+  </defs>
+
+  <!-- Transform group for positioning -->
+  <g transform="translate(0, 0)">
+
+    <!-- ===== TABLE TITLE ===== -->
+    <text x="0" y="5" class="bom-title">BILL OF MATERIALS</text>
+
+    <!-- Main table group (offset below title) -->
+    <g transform="translate(0, 8)">
+
+      <!-- ===== HEADER ROW BACKGROUND ===== -->
+      <rect x="0" y="0" width="270" height="8" class="bom-header-bg"/>
+
+      <!-- ===== ROW BACKGROUNDS ===== -->
+      <rect x="0" y="8" width="270" height="6"
+            class="bom-row-even"/>
+      <rect x="0" y="14" width="270" height="6"
+            class="bom-row-odd"/>
+      <rect x="0" y="20" width="270" height="6"
+            class="bom-row-even"/>
+      <rect x="0" y="26" width="270" height="6"
+            class="bom-row-odd"/>
+      <rect x="0" y="32" width="270" height="6"
+            class="bom-row-even"/>
+      <rect x="0" y="38" width="270" height="6"
+            class="bom-row-odd"/>
+      <rect x="0" y="44" width="270" height="6"
+            class="bom-row-even"/>
+      
+
+      <!-- ===== OUTER BORDER ===== -->
+      <rect x="0" y="0" width="270" height="52" class="bom-border-heavy"/>
+
+      <!-- ===== HEADER DIVIDER LINE ===== -->
+      <line x1="0" y1="8" x2="270" y2="8" class="bom-divider-header"/>
+
+      <!-- ===== VERTICAL COLUMN DIVIDERS ===== -->
+      <!-- Item | Part Number -->
+      <line x1="8" y1="0" x2="8" y2="52" class="bom-divider-v"/>
+      <!-- Part Number | Manufacturer -->
+      <line x1="43" y1="0" x2="43" y2="52" class="bom-divider-v"/>
+      <!-- Manufacturer | MPN -->
+      <line x1="83" y1="0" x2="83" y2="52" class="bom-divider-v"/>
+      <!-- MPN | Description -->
+      <line x1="128" y1="0" x2="128" y2="52" class="bom-divider-v"/>
+      <!-- Description | Qty -->
+      <line x1="210" y1="0" x2="210" y2="52" class="bom-divider-v"/>
+      
+      <!-- Qty | Alternates -->
+      <line x1="225" y1="0" x2="225" y2="52" class="bom-divider-v"/>
+      
+
+      <!-- ===== HORIZONTAL ROW DIVIDERS ===== -->
+      <line x1="0" y1="14" x2="270" y2="14" class="bom-divider-h"/><line x1="0" y1="20" x2="270" y2="20" class="bom-divider-h"/><line x1="0" y1="26" x2="270" y2="26" class="bom-divider-h"/><line x1="0" y1="32" x2="270" y2="32" class="bom-divider-h"/><line x1="0" y1="38" x2="270" y2="38" class="bom-divider-h"/><line x1="0" y1="44" x2="270" y2="44" class="bom-divider-h"/>
+
+      <!-- ===== HEADER TEXT ===== --><text x="4.0" y="5.0" class="bom-header-text">ITEM</text>
+      <text x="25.5" y="5.0" class="bom-header-text">PART NUMBER</text>
+      <text x="63.0" y="5.0" class="bom-header-text">MANUFACTURER</text>
+      <text x="105.5" y="5.0" class="bom-header-text">MPN</text>
+      <text x="169.0" y="5.0" class="bom-header-text">DESCRIPTION</text>
+      <text x="217.5" y="5.0" class="bom-header-text">QTY</text>
+      
+      <text x="247.5" y="5.0" class="bom-header-text">ALTERNATES</text>
+      
+
+      <!-- ===== DATA ROWS ===== -->
+      <!-- Row 1: D-Sub Connector, 9 Pin, Male -->
+      <g class="bom-row" data-item="1">
+        <!-- Item Number (centered) -->
+        <text x="4.0" y="11.8" class="bom-item-num">1</text>
+
+        <!-- Part Number -->
+        <text x="9.5" y="11.8" class="bom-cell-text">CON-DB9-M</text>
+
+        <!-- Manufacturer -->
+        <text x="44.5" y="11.8" class="bom-cell-text">TE Connectivity</text>
+
+        <!-- MPN -->
+        <text x="84.5" y="11.8" class="bom-cell-text">5747840-4</text>
+
+        <!-- Description -->
+        <text x="129.5" y="11.8" class="bom-cell-text">D-Sub Connector, 9 Pin, Male</text>
+
+        <!-- Quantity (centered) -->
+        <text x="217.5" y="11.8" class="bom-qty">2</text>
+
+        
+        <!-- Alternates -->
+        <text x="226.5" y="11.8" class="bom-cell-text-small">Amphenol ICC 17EHH009SAA</text>
+        
+      </g>
+      <!-- Row 2: D-Sub Connector, 9 Pin, Female -->
+      <g class="bom-row" data-item="2">
+        <!-- Item Number (centered) -->
+        <text x="4.0" y="17.8" class="bom-item-num">2</text>
+
+        <!-- Part Number -->
+        <text x="9.5" y="17.8" class="bom-cell-text">CON-DB9-F</text>
+
+        <!-- Manufacturer -->
+        <text x="44.5" y="17.8" class="bom-cell-text">TE Connectivity</text>
+
+        <!-- MPN -->
+        <text x="84.5" y="17.8" class="bom-cell-text">5747840-5</text>
+
+        <!-- Description -->
+        <text x="129.5" y="17.8" class="bom-cell-text">D-Sub Connector, 9 Pin, Female</text>
+
+        <!-- Quantity (centered) -->
+        <text x="217.5" y="17.8" class="bom-qty">1</text>
+
+        
+        <!-- Alternates -->
+        <text x="226.5" y="17.8" class="bom-cell-text-small"></text>
+        
+      </g>
+      <!-- Row 3: Shielded Cable, 22AWG, 4 Conductor -->
+      <g class="bom-row" data-item="3">
+        <!-- Item Number (centered) -->
+        <text x="4.0" y="23.8" class="bom-item-num">3</text>
+
+        <!-- Part Number -->
+        <text x="9.5" y="23.8" class="bom-cell-text">CBL-22AWG-4C</text>
+
+        <!-- Manufacturer -->
+        <text x="44.5" y="23.8" class="bom-cell-text">Alpha Wire</text>
+
+        <!-- MPN -->
+        <text x="84.5" y="23.8" class="bom-cell-text">5474C SL001</text>
+
+        <!-- Description -->
+        <text x="129.5" y="23.8" class="bom-cell-text">Shielded Cable, 22AWG, 4 Conductor</text>
+
+        <!-- Quantity (centered) -->
+        <text x="217.5" y="23.8" class="bom-qty">2.5m</text>
+
+        
+        <!-- Alternates -->
+        <text x="226.5" y="23.8" class="bom-cell-text-small">Belden 8723</text>
+        
+      </g>
+      <!-- Row 4: Power Cable, 18AWG, 2 Conductor -->
+      <g class="bom-row" data-item="4">
+        <!-- Item Number (centered) -->
+        <text x="4.0" y="29.8" class="bom-item-num">4</text>
+
+        <!-- Part Number -->
+        <text x="9.5" y="29.8" class="bom-cell-text">CBL-18AWG-2C</text>
+
+        <!-- Manufacturer -->
+        <text x="44.5" y="29.8" class="bom-cell-text">Alpha Wire</text>
+
+        <!-- MPN -->
+        <text x="84.5" y="29.8" class="bom-cell-text">5072C SL001</text>
+
+        <!-- Description -->
+        <text x="129.5" y="29.8" class="bom-cell-text">Power Cable, 18AWG, 2 Conductor</text>
+
+        <!-- Quantity (centered) -->
+        <text x="217.5" y="29.8" class="bom-qty">1.8m</text>
+
+        
+        <!-- Alternates -->
+        <text x="226.5" y="29.8" class="bom-cell-text-small"></text>
+        
+      </g>
+      <!-- Row 5: Ring Terminal, 22-18AWG, #6 Stud -->
+      <g class="bom-row" data-item="5">
+        <!-- Item Number (centered) -->
+        <text x="4.0" y="35.8" class="bom-item-num">5</text>
+
+        <!-- Part Number -->
+        <text x="9.5" y="35.8" class="bom-cell-text">TERM-RING-22</text>
+
+        <!-- Manufacturer -->
+        <text x="44.5" y="35.8" class="bom-cell-text">Molex</text>
+
+        <!-- MPN -->
+        <text x="84.5" y="35.8" class="bom-cell-text">19164-0042</text>
+
+        <!-- Description -->
+        <text x="129.5" y="35.8" class="bom-cell-text">Ring Terminal, 22-18AWG, #6 Stud</text>
+
+        <!-- Quantity (centered) -->
+        <text x="217.5" y="35.8" class="bom-qty">8</text>
+
+        
+        <!-- Alternates -->
+        <text x="226.5" y="35.8" class="bom-cell-text-small">TE 34148</text>
+        
+      </g>
+      <!-- Row 6: Heat Shrink Tubing, 3mm, Black -->
+      <g class="bom-row" data-item="6">
+        <!-- Item Number (centered) -->
+        <text x="4.0" y="41.8" class="bom-item-num">6</text>
+
+        <!-- Part Number -->
+        <text x="9.5" y="41.8" class="bom-cell-text">SHRINK-3MM-BK</text>
+
+        <!-- Manufacturer -->
+        <text x="44.5" y="41.8" class="bom-cell-text">3M</text>
+
+        <!-- MPN -->
+        <text x="84.5" y="41.8" class="bom-cell-text">FP-301-3/32</text>
+
+        <!-- Description -->
+        <text x="129.5" y="41.8" class="bom-cell-text">Heat Shrink Tubing, 3mm, Black</text>
+
+        <!-- Quantity (centered) -->
+        <text x="217.5" y="41.8" class="bom-qty">0.5m</text>
+
+        
+        <!-- Alternates -->
+        <text x="226.5" y="41.8" class="bom-cell-text-small"></text>
+        
+      </g>
+      <!-- Row 7: Wire Label, White, Self-Laminating -->
+      <g class="bom-row" data-item="7">
+        <!-- Item Number (centered) -->
+        <text x="4.0" y="47.8" class="bom-item-num">7</text>
+
+        <!-- Part Number -->
+        <text x="9.5" y="47.8" class="bom-cell-text">LABEL-WHT-SM</text>
+
+        <!-- Manufacturer -->
+        <text x="44.5" y="47.8" class="bom-cell-text">Brady</text>
+
+        <!-- MPN -->
+        <text x="84.5" y="47.8" class="bom-cell-text">PTL-19-427</text>
+
+        <!-- Description -->
+        <text x="129.5" y="47.8" class="bom-cell-text">Wire Label, White, Self-Laminating</text>
+
+        <!-- Quantity (centered) -->
+        <text x="217.5" y="47.8" class="bom-qty">12</text>
+
+        
+        <!-- Alternates -->
+        <text x="226.5" y="47.8" class="bom-cell-text-small">Panduit S100X150YAJ</text>
+        
+      </g>
+      
+
+      <!-- ===== EMPTY TABLE MESSAGE ===== -->
+      
+
+    </g>
+  </g>
+</svg>

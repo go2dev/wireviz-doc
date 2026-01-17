@@ -1,0 +1,666 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Wiring Table Template
+  =====================
+  SVG template for rendering a wiring/connection table in engineering drawings.
+
+  This template generates a professional wiring table with the following columns:
+    - From: Source component/connector
+    - From Pin: Source pin/terminal identifier
+    - To: Destination component/connector
+    - To Pin: Destination pin/terminal identifier
+    - Cable: Cable identifier
+    - Core: Wire/core identifier within cable
+    - Label: Wire label/tag
+    - Color: Wire color code
+    - Pair: Twisted pair identifier (if applicable)
+    - Notes: Additional notes
+
+  Required Jinja2 variables:
+    - wiring: List of wiring connections, each containing:
+        - from_component: Source component name (string)
+        - from_pin: Source pin identifier (string)
+        - to_component: Destination component name (string)
+        - to_pin: Destination pin identifier (string)
+        - cable: Cable identifier (string)
+        - core: Core/conductor identifier (string)
+        - label: Wire label (string, optional)
+        - color: Wire color (string, optional)
+        - pair: Twisted pair ID (string/int, optional)
+        - notes: Additional notes (string, optional)
+
+  Optional Jinja2 variables:
+    - wiring_x: X position offset (default: 0)
+    - wiring_y: Y position offset (default: 0)
+    - wiring_width: Total table width in mm (default: 270)
+    - wiring_title: Table title (default: "WIRING TABLE")
+    - show_pair_grouping: Enable visual pair grouping (default: true)
+    - pair_colors: Dict of pair IDs to background colors
+
+  Column widths (proportional, totaling wiring_width):
+    - From: 35mm
+    - From Pin: 18mm
+    - To: 35mm
+    - To Pin: 18mm
+    - Cable: 25mm
+    - Core: 18mm
+    - Label: 25mm
+    - Color: 22mm
+    - Pair: 15mm
+    - Notes: 59mm
+
+  Row height: 5.5mm (header: 7mm)
+--><svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="270mm"
+     height="68.5mm"
+     viewBox="0 0 270 68.5">
+
+  <defs>
+    <!-- Wiring Table Styles -->
+    <style type="text/css">
+      <![CDATA[
+        /* Table structure */
+        .wt-border {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.5;
+        }
+
+        .wt-border-heavy {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.7;
+        }
+
+        .wt-header-bg {
+          fill: #D0D0D0;
+          stroke: none;
+        }
+
+        .wt-row-even {
+          fill: #FFFFFF;
+          stroke: none;
+        }
+
+        .wt-row-odd {
+          fill: #FAFAFA;
+          stroke: none;
+        }
+
+        .wt-divider-v {
+          stroke: #000000;
+          stroke-width: 0.3;
+        }
+
+        .wt-divider-v-major {
+          stroke: #000000;
+          stroke-width: 0.45;
+        }
+
+        .wt-divider-h {
+          stroke: #CCCCCC;
+          stroke-width: 0.2;
+        }
+
+        .wt-divider-header {
+          stroke: #000000;
+          stroke-width: 0.5;
+        }
+
+        /* Text styles */
+        .wt-title {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 4px;
+          font-weight: bold;
+          fill: #000000;
+          text-anchor: start;
+        }
+
+        .wt-header-text {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.4px;
+          font-weight: bold;
+          fill: #333333;
+          text-anchor: middle;
+        }
+
+        .wt-cell-text {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.3px;
+          fill: #000000;
+          text-anchor: start;
+        }
+
+        .wt-cell-text-center {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.3px;
+          fill: #000000;
+          text-anchor: middle;
+        }
+
+        .wt-cell-text-bold {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.3px;
+          font-weight: bold;
+          fill: #000000;
+          text-anchor: start;
+        }
+
+        .wt-cell-text-small {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2px;
+          fill: #555555;
+          text-anchor: start;
+        }
+
+        .wt-pin-text {
+          font-family: 'Courier New', Courier, monospace;
+          font-size: 2.3px;
+          fill: #000000;
+          text-anchor: middle;
+        }
+
+        .wt-color-swatch {
+          stroke: #333333;
+          stroke-width: 0.2;
+        }
+
+        .wt-pair-indicator {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.2px;
+          font-weight: bold;
+          fill: #666666;
+          text-anchor: middle;
+        }
+
+        /* Pair grouping backgrounds */
+        .wt-pair-bg {
+          stroke: none;
+          opacity: 0.6;
+        }
+      ]]>
+    </style>
+
+    <!-- Color swatches for common wire colors -->
+    <!-- These can be referenced by color name -->
+  </defs>
+
+  <!-- Transform group for positioning -->
+  <g transform="translate(0, 0)">
+
+    <!-- ===== TABLE TITLE ===== -->
+    <text x="0" y="5" class="wt-title">WIRING TABLE</text>
+
+    <!-- Main table group (offset below title) -->
+    <g transform="translate(0, 8)">
+
+      <!-- ===== HEADER ROW BACKGROUND ===== -->
+      <rect x="0" y="0" width="270" height="7" class="wt-header-bg"/>
+
+      <!-- ===== ROW BACKGROUNDS (with twisted pair grouping) ===== -->
+      
+      <rect x="0" y="7.0" width="270" height="5.5"
+            class="wt-row-even"/>
+      
+      
+      <rect x="0" y="12.5" width="270" height="5.5"
+            class="wt-row-odd"/>
+      
+      
+      <!-- Pair 1 grouped row -->
+      <rect x="0" y="18.0" width="270" height="5.5"
+            class="wt-pair-bg" fill="#FFF8E1"/>
+      
+      
+      <!-- Pair 1 grouped row -->
+      <rect x="0" y="23.5" width="270" height="5.5"
+            class="wt-pair-bg" fill="#FFF8E1"/>
+      
+      
+      <!-- Pair 2 grouped row -->
+      <rect x="0" y="29.0" width="270" height="5.5"
+            class="wt-pair-bg" fill="#E8F5E9"/>
+      
+      
+      <!-- Pair 2 grouped row -->
+      <rect x="0" y="34.5" width="270" height="5.5"
+            class="wt-pair-bg" fill="#E8F5E9"/>
+      
+      
+      <rect x="0" y="40.0" width="270" height="5.5"
+            class="wt-row-even"/>
+      
+      
+      <rect x="0" y="45.5" width="270" height="5.5"
+            class="wt-row-odd"/>
+      
+      
+      <rect x="0" y="51.0" width="270" height="5.5"
+            class="wt-row-even"/>
+      
+      
+
+      <!-- ===== OUTER BORDER ===== -->
+      <rect x="0" y="0" width="270" height="58.5" class="wt-border-heavy"/>
+
+      <!-- ===== HEADER DIVIDER LINE ===== -->
+      <line x1="0" y1="7" x2="270" y2="7" class="wt-divider-header"/>
+
+      <!-- ===== VERTICAL COLUMN DIVIDERS ===== -->
+      <!-- From | From Pin (major divider after "From" group) -->
+      <line x1="35" y1="0" x2="35" y2="58.5" class="wt-divider-v"/>
+      <!-- From Pin | To (major divider between source and destination) -->
+      <line x1="53" y1="0" x2="53" y2="58.5" class="wt-divider-v-major"/>
+      <!-- To | To Pin -->
+      <line x1="88" y1="0" x2="88" y2="58.5" class="wt-divider-v"/>
+      <!-- To Pin | Cable (major divider after "To" group) -->
+      <line x1="106" y1="0" x2="106" y2="58.5" class="wt-divider-v-major"/>
+      <!-- Cable | Core -->
+      <line x1="131" y1="0" x2="131" y2="58.5" class="wt-divider-v"/>
+      <!-- Core | Label -->
+      <line x1="149" y1="0" x2="149" y2="58.5" class="wt-divider-v"/>
+      <!-- Label | Color -->
+      <line x1="174" y1="0" x2="174" y2="58.5" class="wt-divider-v"/>
+      <!-- Color | Pair -->
+      <line x1="196" y1="0" x2="196" y2="58.5" class="wt-divider-v"/>
+      <!-- Pair | Notes -->
+      <line x1="211" y1="0" x2="211" y2="58.5" class="wt-divider-v-major"/>
+
+      <!-- ===== HORIZONTAL ROW DIVIDERS ===== -->
+      <line x1="0" y1="12.5" x2="270" y2="12.5" class="wt-divider-h"/><line x1="0" y1="18.0" x2="270" y2="18.0" class="wt-divider-h"/><line x1="0" y1="23.5" x2="270" y2="23.5" class="wt-divider-h"/><line x1="0" y1="29.0" x2="270" y2="29.0" class="wt-divider-h"/><line x1="0" y1="34.5" x2="270" y2="34.5" class="wt-divider-h"/><line x1="0" y1="40.0" x2="270" y2="40.0" class="wt-divider-h"/><line x1="0" y1="45.5" x2="270" y2="45.5" class="wt-divider-h"/><line x1="0" y1="51.0" x2="270" y2="51.0" class="wt-divider-h"/>
+
+      <!-- ===== HEADER TEXT ===== --><text x="17.5" y="4.3" class="wt-header-text">FROM</text>
+      <text x="44.0" y="4.3" class="wt-header-text">PIN</text>
+      <text x="70.5" y="4.3" class="wt-header-text">TO</text>
+      <text x="97.0" y="4.3" class="wt-header-text">PIN</text>
+      <text x="118.5" y="4.3" class="wt-header-text">CABLE</text>
+      <text x="140.0" y="4.3" class="wt-header-text">CORE</text>
+      <text x="161.5" y="4.3" class="wt-header-text">LABEL</text>
+      <text x="185.0" y="4.3" class="wt-header-text">COLOR</text>
+      <text x="203.5" y="4.3" class="wt-header-text">PAIR</text>
+      <text x="240.5" y="4.3" class="wt-header-text">NOTES</text>
+
+      <!-- ===== DATA ROWS ===== -->
+      <!-- Row 1: J1 -> TB1 -->
+      <g class="wt-row" data-row="1">
+
+        <!-- From Component -->
+        <text x="1" y="10.45" class="wt-cell-text-bold">J1</text>
+
+        <!-- From Pin (centered, monospace) -->
+        <text x="44.0" y="10.45" class="wt-pin-text">1</text>
+
+        <!-- To Component -->
+        <text x="54" y="10.45" class="wt-cell-text-bold">TB1</text>
+
+        <!-- To Pin (centered, monospace) -->
+        <text x="97.0" y="10.45" class="wt-pin-text">1</text>
+
+        <!-- Cable ID -->
+        <text x="107" y="10.45" class="wt-cell-text">W1</text>
+
+        <!-- Core -->
+        <text x="140.0" y="10.45" class="wt-cell-text-center">1</text>
+
+        <!-- Label -->
+        <text x="150" y="10.45" class="wt-cell-text">PWR+</text>
+
+        <!-- Color (with optional swatch) -->
+        
+        <rect x="175" y="8.2" width="3" height="3"
+              class="wt-color-swatch" fill="#FF0000"/>
+        <text x="179.5" y="10.45" class="wt-cell-text">RD</text>
+        
+        
+
+        <!-- Pair (centered with indicator) -->
+        
+
+        <!-- Notes -->
+        <text x="212" y="10.45" class="wt-cell-text-small">Main power supply positive</text>
+
+      </g>
+      <!-- Row 2: J1 -> TB1 -->
+      <g class="wt-row" data-row="2">
+
+        <!-- From Component -->
+        <text x="1" y="15.95" class="wt-cell-text-bold">J1</text>
+
+        <!-- From Pin (centered, monospace) -->
+        <text x="44.0" y="15.95" class="wt-pin-text">2</text>
+
+        <!-- To Component -->
+        <text x="54" y="15.95" class="wt-cell-text-bold">TB1</text>
+
+        <!-- To Pin (centered, monospace) -->
+        <text x="97.0" y="15.95" class="wt-pin-text">2</text>
+
+        <!-- Cable ID -->
+        <text x="107" y="15.95" class="wt-cell-text">W1</text>
+
+        <!-- Core -->
+        <text x="140.0" y="15.95" class="wt-cell-text-center">2</text>
+
+        <!-- Label -->
+        <text x="150" y="15.95" class="wt-cell-text">PWR-</text>
+
+        <!-- Color (with optional swatch) -->
+        
+        <rect x="175" y="13.7" width="3" height="3"
+              class="wt-color-swatch" fill="#000000"/>
+        <text x="179.5" y="15.95" class="wt-cell-text">BK</text>
+        
+        
+
+        <!-- Pair (centered with indicator) -->
+        
+
+        <!-- Notes -->
+        <text x="212" y="15.95" class="wt-cell-text-small">Main power supply return</text>
+
+      </g>
+      <!-- Row 3: J2 -> J3 -->
+      <g class="wt-row" data-row="3">
+
+        <!-- From Component -->
+        <text x="1" y="21.45" class="wt-cell-text-bold">J2</text>
+
+        <!-- From Pin (centered, monospace) -->
+        <text x="44.0" y="21.45" class="wt-pin-text">1</text>
+
+        <!-- To Component -->
+        <text x="54" y="21.45" class="wt-cell-text-bold">J3</text>
+
+        <!-- To Pin (centered, monospace) -->
+        <text x="97.0" y="21.45" class="wt-pin-text">1</text>
+
+        <!-- Cable ID -->
+        <text x="107" y="21.45" class="wt-cell-text">W2</text>
+
+        <!-- Core -->
+        <text x="140.0" y="21.45" class="wt-cell-text-center">1</text>
+
+        <!-- Label -->
+        <text x="150" y="21.45" class="wt-cell-text">TX+</text>
+
+        <!-- Color (with optional swatch) -->
+        
+        <rect x="175" y="19.2" width="3" height="3"
+              class="wt-color-swatch" fill="#FFFFFF"/>
+        <text x="179.5" y="21.45" class="wt-cell-text">WH</text>
+        
+        
+
+        <!-- Pair (centered with indicator) -->
+        
+        <text x="203.5" y="21.45" class="wt-pair-indicator">P1</text>
+        
+
+        <!-- Notes -->
+        <text x="212" y="21.45" class="wt-cell-text-small">RS-485 transmit positive</text>
+
+      </g>
+      <!-- Row 4: J2 -> J3 -->
+      <g class="wt-row" data-row="4">
+
+        <!-- From Component -->
+        <text x="1" y="26.95" class="wt-cell-text-bold">J2</text>
+
+        <!-- From Pin (centered, monospace) -->
+        <text x="44.0" y="26.95" class="wt-pin-text">2</text>
+
+        <!-- To Component -->
+        <text x="54" y="26.95" class="wt-cell-text-bold">J3</text>
+
+        <!-- To Pin (centered, monospace) -->
+        <text x="97.0" y="26.95" class="wt-pin-text">2</text>
+
+        <!-- Cable ID -->
+        <text x="107" y="26.95" class="wt-cell-text">W2</text>
+
+        <!-- Core -->
+        <text x="140.0" y="26.95" class="wt-cell-text-center">2</text>
+
+        <!-- Label -->
+        <text x="150" y="26.95" class="wt-cell-text">TX-</text>
+
+        <!-- Color (with optional swatch) -->
+        
+        <rect x="175" y="24.7" width="3" height="3"
+              class="wt-color-swatch" fill="#0000FF"/>
+        <text x="179.5" y="26.95" class="wt-cell-text">BU</text>
+        
+        
+
+        <!-- Pair (centered with indicator) -->
+        
+        <text x="203.5" y="26.95" class="wt-pair-indicator">P1</text>
+        
+
+        <!-- Notes -->
+        <text x="212" y="26.95" class="wt-cell-text-small">RS-485 transmit negative</text>
+
+      </g>
+      <!-- Row 5: J2 -> J3 -->
+      <g class="wt-row" data-row="5">
+
+        <!-- From Component -->
+        <text x="1" y="32.45" class="wt-cell-text-bold">J2</text>
+
+        <!-- From Pin (centered, monospace) -->
+        <text x="44.0" y="32.45" class="wt-pin-text">3</text>
+
+        <!-- To Component -->
+        <text x="54" y="32.45" class="wt-cell-text-bold">J3</text>
+
+        <!-- To Pin (centered, monospace) -->
+        <text x="97.0" y="32.45" class="wt-pin-text">3</text>
+
+        <!-- Cable ID -->
+        <text x="107" y="32.45" class="wt-cell-text">W2</text>
+
+        <!-- Core -->
+        <text x="140.0" y="32.45" class="wt-cell-text-center">3</text>
+
+        <!-- Label -->
+        <text x="150" y="32.45" class="wt-cell-text">RX+</text>
+
+        <!-- Color (with optional swatch) -->
+        
+        <rect x="175" y="30.2" width="3" height="3"
+              class="wt-color-swatch" fill="#FF8800"/>
+        <text x="179.5" y="32.45" class="wt-cell-text">OR</text>
+        
+        
+
+        <!-- Pair (centered with indicator) -->
+        
+        <text x="203.5" y="32.45" class="wt-pair-indicator">P2</text>
+        
+
+        <!-- Notes -->
+        <text x="212" y="32.45" class="wt-cell-text-small">RS-485 receive positive</text>
+
+      </g>
+      <!-- Row 6: J2 -> J3 -->
+      <g class="wt-row" data-row="6">
+
+        <!-- From Component -->
+        <text x="1" y="37.95" class="wt-cell-text-bold">J2</text>
+
+        <!-- From Pin (centered, monospace) -->
+        <text x="44.0" y="37.95" class="wt-pin-text">4</text>
+
+        <!-- To Component -->
+        <text x="54" y="37.95" class="wt-cell-text-bold">J3</text>
+
+        <!-- To Pin (centered, monospace) -->
+        <text x="97.0" y="37.95" class="wt-pin-text">4</text>
+
+        <!-- Cable ID -->
+        <text x="107" y="37.95" class="wt-cell-text">W2</text>
+
+        <!-- Core -->
+        <text x="140.0" y="37.95" class="wt-cell-text-center">4</text>
+
+        <!-- Label -->
+        <text x="150" y="37.95" class="wt-cell-text">RX-</text>
+
+        <!-- Color (with optional swatch) -->
+        
+        <rect x="175" y="35.7" width="3" height="3"
+              class="wt-color-swatch" fill="#00AA00"/>
+        <text x="179.5" y="37.95" class="wt-cell-text">GN</text>
+        
+        
+
+        <!-- Pair (centered with indicator) -->
+        
+        <text x="203.5" y="37.95" class="wt-pair-indicator">P2</text>
+        
+
+        <!-- Notes -->
+        <text x="212" y="37.95" class="wt-cell-text-small">RS-485 receive negative</text>
+
+      </g>
+      <!-- Row 7: J2 -> TB2 -->
+      <g class="wt-row" data-row="7">
+
+        <!-- From Component -->
+        <text x="1" y="43.45" class="wt-cell-text-bold">J2</text>
+
+        <!-- From Pin (centered, monospace) -->
+        <text x="44.0" y="43.45" class="wt-pin-text">5</text>
+
+        <!-- To Component -->
+        <text x="54" y="43.45" class="wt-cell-text-bold">TB2</text>
+
+        <!-- To Pin (centered, monospace) -->
+        <text x="97.0" y="43.45" class="wt-pin-text">1</text>
+
+        <!-- Cable ID -->
+        <text x="107" y="43.45" class="wt-cell-text">W2</text>
+
+        <!-- Core -->
+        <text x="140.0" y="43.45" class="wt-cell-text-center">SH</text>
+
+        <!-- Label -->
+        <text x="150" y="43.45" class="wt-cell-text">SHLD</text>
+
+        <!-- Color (with optional swatch) -->
+        
+        <rect x="175" y="41.2" width="3" height="3"
+              class="wt-color-swatch" fill="#808080"/>
+        <text x="179.5" y="43.45" class="wt-cell-text">GY</text>
+        
+        
+
+        <!-- Pair (centered with indicator) -->
+        
+
+        <!-- Notes -->
+        <text x="212" y="43.45" class="wt-cell-text-small">Cable shield drain wire</text>
+
+      </g>
+      <!-- Row 8: J4 -> SW1 -->
+      <g class="wt-row" data-row="8">
+
+        <!-- From Component -->
+        <text x="1" y="48.95" class="wt-cell-text-bold">J4</text>
+
+        <!-- From Pin (centered, monospace) -->
+        <text x="44.0" y="48.95" class="wt-pin-text">A</text>
+
+        <!-- To Component -->
+        <text x="54" y="48.95" class="wt-cell-text-bold">SW1</text>
+
+        <!-- To Pin (centered, monospace) -->
+        <text x="97.0" y="48.95" class="wt-pin-text">1</text>
+
+        <!-- Cable ID -->
+        <text x="107" y="48.95" class="wt-cell-text">W3</text>
+
+        <!-- Core -->
+        <text x="140.0" y="48.95" class="wt-cell-text-center">1</text>
+
+        <!-- Label -->
+        <text x="150" y="48.95" class="wt-cell-text">SIG1</text>
+
+        <!-- Color (with optional swatch) -->
+        
+        <rect x="175" y="46.7" width="3" height="3"
+              class="wt-color-swatch" fill="#FFDD00"/>
+        <text x="179.5" y="48.95" class="wt-cell-text">YE</text>
+        
+        
+
+        <!-- Pair (centered with indicator) -->
+        
+
+        <!-- Notes -->
+        <text x="212" y="48.95" class="wt-cell-text-small">Digital input 1</text>
+
+      </g>
+      <!-- Row 9: J4 -> SW1 -->
+      <g class="wt-row" data-row="9">
+
+        <!-- From Component -->
+        <text x="1" y="54.45" class="wt-cell-text-bold">J4</text>
+
+        <!-- From Pin (centered, monospace) -->
+        <text x="44.0" y="54.45" class="wt-pin-text">B</text>
+
+        <!-- To Component -->
+        <text x="54" y="54.45" class="wt-cell-text-bold">SW1</text>
+
+        <!-- To Pin (centered, monospace) -->
+        <text x="97.0" y="54.45" class="wt-pin-text">2</text>
+
+        <!-- Cable ID -->
+        <text x="107" y="54.45" class="wt-cell-text">W3</text>
+
+        <!-- Core -->
+        <text x="140.0" y="54.45" class="wt-cell-text-center">2</text>
+
+        <!-- Label -->
+        <text x="150" y="54.45" class="wt-cell-text">SIG2</text>
+
+        <!-- Color (with optional swatch) -->
+        
+        <rect x="175" y="52.2" width="3" height="3"
+              class="wt-color-swatch" fill="#8B00FF"/>
+        <text x="179.5" y="54.45" class="wt-cell-text">VT</text>
+        
+        
+
+        <!-- Pair (centered with indicator) -->
+        
+
+        <!-- Notes -->
+        <text x="212" y="54.45" class="wt-cell-text-small">Digital input 2</text>
+
+      </g>
+      
+
+      <!-- ===== EMPTY TABLE MESSAGE ===== -->
+      
+
+    </g>
+
+    <!-- ===== LEGEND FOR PAIR GROUPING ===== -->
+    
+    
+    <g transform="translate(0, 68.5)">
+      <text x="0" y="3" class="wt-cell-text-small" style="font-weight: bold;">Twisted Pair Legend:</text>
+      <rect x="30" y="0" width="4" height="4" fill="#FFF8E1" class="wt-color-swatch"/>
+      <text x="35.5" y="3" class="wt-cell-text-small">P1</text>
+      <rect x="48" y="0" width="4" height="4" fill="#E8F5E9" class="wt-color-swatch"/>
+      <text x="53.5" y="3" class="wt-cell-text-small">P2</text>
+      
+    </g>
+    
+    
+
+  </g>
+</svg>

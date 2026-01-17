@@ -1,0 +1,986 @@
+# =============================================================================
+# Standalone Parts Library
+# =============================================================================
+#
+# This file contains a reusable parts library that can be imported or
+# referenced by multiple harness definitions.
+#
+# Organization:
+#   - connectors: Connector housings, headers, and plugs
+#   - contacts: Crimp contacts and terminals
+#   - cables: Multi-conductor cables and wire
+#   - accessories: Heatshrink, labels, conduit, tape, etc.
+#
+# Usage:
+#   Reference these parts by their 'id' in your harness YAML files.
+#   Future versions may support YAML anchors or explicit imports.
+#
+# =============================================================================
+
+# =============================================================================
+# CONNECTORS
+# =============================================================================
+# Organized by manufacturer and series for easy navigation.
+
+connectors:
+  # ---------------------------------------------------------------------------
+  # MOLEX MINI-FIT JR SERIES
+  # ---------------------------------------------------------------------------
+  # Popular automotive/industrial power connector, 4.2mm pitch
+  # Current rating: 13A per contact
+  # Voltage rating: 600V
+
+  molex_minifit_2pos_receptacle:
+    primary_pn: "CONN-MF2R"
+    manufacturer: "Molex"
+    mpn: "39-01-2020"
+    description: "Mini-Fit Jr 2-circuit receptacle housing"
+    fields:
+      series: "Mini-Fit Jr"
+      positions: 2
+      gender: "female"
+      pitch_mm: 4.2
+      current_rating_a: 13
+      voltage_rating_v: 600
+      ul_rating: "UL94V-0"
+
+  molex_minifit_4pos_receptacle:
+    primary_pn: "CONN-MF4R"
+    manufacturer: "Molex"
+    mpn: "39-01-2040"
+    description: "Mini-Fit Jr 4-circuit receptacle housing"
+    fields:
+      series: "Mini-Fit Jr"
+      positions: 4
+      gender: "female"
+      pitch_mm: 4.2
+      current_rating_a: 13
+      voltage_rating_v: 600
+
+  molex_minifit_6pos_receptacle:
+    primary_pn: "CONN-MF6R"
+    manufacturer: "Molex"
+    mpn: "39-01-2060"
+    description: "Mini-Fit Jr 6-circuit receptacle housing"
+    fields:
+      series: "Mini-Fit Jr"
+      positions: 6
+      gender: "female"
+      pitch_mm: 4.2
+
+  molex_minifit_2pos_header:
+    primary_pn: "CONN-MF2H"
+    manufacturer: "Molex"
+    mpn: "39-30-1020"
+    description: "Mini-Fit Jr 2-circuit header, vertical, through-hole"
+    fields:
+      series: "Mini-Fit Jr"
+      positions: 2
+      gender: "male"
+      mounting: "through-hole"
+      orientation: "vertical"
+
+  molex_minifit_4pos_header:
+    primary_pn: "CONN-MF4H"
+    manufacturer: "Molex"
+    mpn: "39-30-1040"
+    description: "Mini-Fit Jr 4-circuit header, vertical, through-hole"
+    fields:
+      series: "Mini-Fit Jr"
+      positions: 4
+      gender: "male"
+      mounting: "through-hole"
+      orientation: "vertical"
+
+  # ---------------------------------------------------------------------------
+  # MOLEX MICRO-FIT 3.0 SERIES
+  # ---------------------------------------------------------------------------
+  # Compact power connector, 3.0mm pitch
+  # Current rating: 5A per contact
+
+  molex_microfit_4pos_receptacle:
+    primary_pn: "CONN-UF4R"
+    manufacturer: "Molex"
+    mpn: "43025-0400"
+    description: "Micro-Fit 3.0 4-circuit receptacle housing"
+    fields:
+      series: "Micro-Fit 3.0"
+      positions: 4
+      gender: "female"
+      pitch_mm: 3.0
+      current_rating_a: 5
+
+  molex_microfit_6pos_receptacle:
+    primary_pn: "CONN-UF6R"
+    manufacturer: "Molex"
+    mpn: "43025-0600"
+    description: "Micro-Fit 3.0 6-circuit receptacle housing"
+    fields:
+      series: "Micro-Fit 3.0"
+      positions: 6
+      gender: "female"
+      pitch_mm: 3.0
+
+  # ---------------------------------------------------------------------------
+  # DEUTSCH DT SERIES
+  # ---------------------------------------------------------------------------
+  # Environmentally sealed automotive connectors
+  # IP67/IP69K rated, -55C to +125C
+
+  deutsch_dt04_2p:
+    primary_pn: "CONN-DT2P"
+    manufacturer: "Deutsch"
+    mpn: "DT04-2P"
+    description: "DT Series 2-way plug (male pins)"
+    alternates:
+      - manufacturer: "TE Connectivity"
+        mpn: "DT04-2P-E004"
+    fields:
+      series: "DT"
+      positions: 2
+      gender: "male"
+      ip_rating: "IP67"
+      temp_range_c: "-55 to +125"
+      color: "gray"
+
+  deutsch_dt06_2s:
+    primary_pn: "CONN-DT2S"
+    manufacturer: "Deutsch"
+    mpn: "DT06-2S"
+    description: "DT Series 2-way receptacle (female sockets)"
+    fields:
+      series: "DT"
+      positions: 2
+      gender: "female"
+      ip_rating: "IP67"
+
+  deutsch_dt04_3p:
+    primary_pn: "CONN-DT3P"
+    manufacturer: "Deutsch"
+    mpn: "DT04-3P"
+    description: "DT Series 3-way plug (male pins)"
+    fields:
+      series: "DT"
+      positions: 3
+      gender: "male"
+      ip_rating: "IP67"
+
+  deutsch_dt06_3s:
+    primary_pn: "CONN-DT3S"
+    manufacturer: "Deutsch"
+    mpn: "DT06-3S"
+    description: "DT Series 3-way receptacle (female sockets)"
+    fields:
+      series: "DT"
+      positions: 3
+      gender: "female"
+      ip_rating: "IP67"
+
+  deutsch_dt04_4p:
+    primary_pn: "CONN-DT4P"
+    manufacturer: "Deutsch"
+    mpn: "DT04-4P"
+    description: "DT Series 4-way plug (male pins)"
+    fields:
+      series: "DT"
+      positions: 4
+      gender: "male"
+      ip_rating: "IP67"
+
+  deutsch_dt06_4s:
+    primary_pn: "CONN-DT4S"
+    manufacturer: "Deutsch"
+    mpn: "DT06-4S"
+    description: "DT Series 4-way receptacle (female sockets)"
+    fields:
+      series: "DT"
+      positions: 4
+      gender: "female"
+      ip_rating: "IP67"
+
+  deutsch_dt04_6p:
+    primary_pn: "CONN-DT6P"
+    manufacturer: "Deutsch"
+    mpn: "DT04-6P"
+    description: "DT Series 6-way plug (male pins)"
+    fields:
+      series: "DT"
+      positions: 6
+      gender: "male"
+      ip_rating: "IP67"
+
+  deutsch_dt06_6s:
+    primary_pn: "CONN-DT6S"
+    manufacturer: "Deutsch"
+    mpn: "DT06-6S"
+    description: "DT Series 6-way receptacle (female sockets)"
+    fields:
+      series: "DT"
+      positions: 6
+      gender: "female"
+      ip_rating: "IP67"
+
+  deutsch_dt04_8p:
+    primary_pn: "CONN-DT8P"
+    manufacturer: "Deutsch"
+    mpn: "DT04-8P"
+    description: "DT Series 8-way plug (male pins)"
+    fields:
+      series: "DT"
+      positions: 8
+      gender: "male"
+      ip_rating: "IP67"
+
+  deutsch_dt04_12p:
+    primary_pn: "CONN-DT12P"
+    manufacturer: "Deutsch"
+    mpn: "DT04-12P"
+    description: "DT Series 12-way plug (male pins)"
+    fields:
+      series: "DT"
+      positions: 12
+      gender: "male"
+      ip_rating: "IP67"
+
+  # ---------------------------------------------------------------------------
+  # TE CONNECTIVITY / AMP SUPERSEAL 1.5 SERIES
+  # ---------------------------------------------------------------------------
+  # Sealed automotive connector for engine bay applications
+
+  te_superseal_2pos_plug:
+    primary_pn: "CONN-SS2P"
+    manufacturer: "TE Connectivity"
+    mpn: "282080-1"
+    description: "Superseal 1.5 2-pos plug housing"
+    fields:
+      series: "Superseal 1.5"
+      positions: 2
+      gender: "male"
+      ip_rating: "IP67"
+
+  te_superseal_3pos_plug:
+    primary_pn: "CONN-SS3P"
+    manufacturer: "TE Connectivity"
+    mpn: "282087-1"
+    description: "Superseal 1.5 3-pos plug housing"
+    fields:
+      series: "Superseal 1.5"
+      positions: 3
+      gender: "male"
+      ip_rating: "IP67"
+
+  te_superseal_4pos_plug:
+    primary_pn: "CONN-SS4P"
+    manufacturer: "TE Connectivity"
+    mpn: "282088-1"
+    description: "Superseal 1.5 4-pos plug housing"
+    fields:
+      series: "Superseal 1.5"
+      positions: 4
+      gender: "male"
+      ip_rating: "IP67"
+
+  # ---------------------------------------------------------------------------
+  # JST CONNECTORS
+  # ---------------------------------------------------------------------------
+  # Common in consumer electronics and small appliances
+
+  jst_xh_2pos:
+    primary_pn: "CONN-XH2"
+    manufacturer: "JST"
+    mpn: "XHP-2"
+    description: "XH Series 2-pos housing, 2.5mm pitch"
+    fields:
+      series: "XH"
+      positions: 2
+      pitch_mm: 2.5
+      current_rating_a: 3
+
+  jst_xh_3pos:
+    primary_pn: "CONN-XH3"
+    manufacturer: "JST"
+    mpn: "XHP-3"
+    description: "XH Series 3-pos housing, 2.5mm pitch"
+    fields:
+      series: "XH"
+      positions: 3
+      pitch_mm: 2.5
+
+  jst_xh_4pos:
+    primary_pn: "CONN-XH4"
+    manufacturer: "JST"
+    mpn: "XHP-4"
+    description: "XH Series 4-pos housing, 2.5mm pitch"
+    fields:
+      series: "XH"
+      positions: 4
+      pitch_mm: 2.5
+
+  jst_sm_2pos:
+    primary_pn: "CONN-SM2"
+    manufacturer: "JST"
+    mpn: "SMR-02V-N"
+    description: "SM Series 2-pos receptacle, 2.5mm pitch"
+    fields:
+      series: "SM"
+      positions: 2
+      pitch_mm: 2.5
+      gender: "female"
+
+# =============================================================================
+# CONTACTS & TERMINALS
+# =============================================================================
+# Crimp contacts, terminals, and related components
+
+contacts:
+  # Molex Mini-Fit contacts
+  molex_minifit_female_18_24:
+    primary_pn: "CONT-MF-F-18"
+    manufacturer: "Molex"
+    mpn: "39-00-0038"
+    description: "Mini-Fit female crimp contact, 18-24 AWG"
+    fields:
+      gender: "female"
+      wire_range_awg: "18-24"
+      plating: "tin"
+
+  molex_minifit_female_16_18:
+    primary_pn: "CONT-MF-F-16"
+    manufacturer: "Molex"
+    mpn: "39-00-0039"
+    description: "Mini-Fit female crimp contact, 16-18 AWG"
+    fields:
+      gender: "female"
+      wire_range_awg: "16-18"
+      plating: "tin"
+
+  molex_minifit_male_18_24:
+    primary_pn: "CONT-MF-M-18"
+    manufacturer: "Molex"
+    mpn: "39-00-0040"
+    description: "Mini-Fit male crimp contact, 18-24 AWG"
+    fields:
+      gender: "male"
+      wire_range_awg: "18-24"
+      plating: "tin"
+
+  # Deutsch DT contacts
+  deutsch_dt_socket_16_20:
+    primary_pn: "CONT-DT-S-16"
+    manufacturer: "Deutsch"
+    mpn: "0462-201-16141"
+    description: "Size 16 socket contact, 16-20 AWG, nickel"
+    fields:
+      size: 16
+      gender: "female"
+      wire_range_awg: "16-20"
+      plating: "nickel"
+
+  deutsch_dt_pin_16_20:
+    primary_pn: "CONT-DT-P-16"
+    manufacturer: "Deutsch"
+    mpn: "0460-202-16141"
+    description: "Size 16 pin contact, 16-20 AWG, nickel"
+    fields:
+      size: 16
+      gender: "male"
+      wire_range_awg: "16-20"
+      plating: "nickel"
+
+  deutsch_dt_socket_20_24:
+    primary_pn: "CONT-DT-S-20"
+    manufacturer: "Deutsch"
+    mpn: "0462-209-16141"
+    description: "Size 20 socket contact, 20-24 AWG, nickel"
+    fields:
+      size: 20
+      gender: "female"
+      wire_range_awg: "20-24"
+      plating: "nickel"
+
+  # Ring terminals
+  ring_terminal_16_14_6:
+    primary_pn: "TERM-R-16-6"
+    manufacturer: "TE Connectivity"
+    mpn: "36151"
+    description: "Ring terminal, 16-14 AWG, #6 stud"
+    fields:
+      type: "ring"
+      wire_range_awg: "16-14"
+      stud_size: "#6"
+      insulated: true
+      insulation_color: "blue"
+
+  ring_terminal_16_14_8:
+    primary_pn: "TERM-R-16-8"
+    manufacturer: "TE Connectivity"
+    mpn: "36152"
+    description: "Ring terminal, 16-14 AWG, #8 stud"
+    fields:
+      type: "ring"
+      wire_range_awg: "16-14"
+      stud_size: "#8"
+      insulated: true
+
+  ring_terminal_22_18_6:
+    primary_pn: "TERM-R-22-6"
+    manufacturer: "TE Connectivity"
+    mpn: "36148"
+    description: "Ring terminal, 22-18 AWG, #6 stud"
+    fields:
+      type: "ring"
+      wire_range_awg: "22-18"
+      stud_size: "#6"
+      insulated: true
+      insulation_color: "red"
+
+# =============================================================================
+# CABLES
+# =============================================================================
+# Multi-conductor cables, hookup wire, and specialty cables
+
+cables:
+  # ---------------------------------------------------------------------------
+  # ALPHA WIRE - GENERAL PURPOSE
+  # ---------------------------------------------------------------------------
+
+  alpha_2c_22awg_shielded:
+    primary_pn: "CABLE-2C-22-SH"
+    manufacturer: "Alpha Wire"
+    mpn: "5302C"
+    description: "2-conductor 22AWG shielded, PVC jacket"
+    fields:
+      conductor_count: 2
+      gauge_awg: 22
+      shield_type: "foil + drain"
+      jacket_material: "PVC"
+      jacket_color: "gray"
+      temp_rating_c: 80
+      voltage_rating_v: 300
+      ul_rating: "UL2464"
+      od_mm: 4.6
+
+  alpha_3c_22awg_shielded:
+    primary_pn: "CABLE-3C-22-SH"
+    manufacturer: "Alpha Wire"
+    mpn: "5303C"
+    description: "3-conductor 22AWG shielded, PVC jacket"
+    fields:
+      conductor_count: 3
+      gauge_awg: 22
+      shield_type: "foil + drain"
+      jacket_material: "PVC"
+      od_mm: 5.2
+
+  alpha_4c_22awg_shielded:
+    primary_pn: "CABLE-4C-22-SH"
+    manufacturer: "Alpha Wire"
+    mpn: "5304C"
+    description: "4-conductor 22AWG shielded, PVC jacket"
+    alternates:
+      - manufacturer: "Belden"
+        mpn: "9534"
+    fields:
+      conductor_count: 4
+      gauge_awg: 22
+      shield_type: "foil + drain"
+      jacket_material: "PVC"
+      od_mm: 5.8
+
+  alpha_2c_18awg:
+    primary_pn: "CABLE-2C-18"
+    manufacturer: "Alpha Wire"
+    mpn: "1172C"
+    description: "2-conductor 18AWG, PVC jacket"
+    fields:
+      conductor_count: 2
+      gauge_awg: 18
+      jacket_material: "PVC"
+      jacket_color: "black"
+      od_mm: 5.1
+
+  alpha_3c_18awg:
+    primary_pn: "CABLE-3C-18"
+    manufacturer: "Alpha Wire"
+    mpn: "1173C"
+    description: "3-conductor 18AWG, PVC jacket"
+    fields:
+      conductor_count: 3
+      gauge_awg: 18
+      jacket_material: "PVC"
+      od_mm: 6.0
+
+  # ---------------------------------------------------------------------------
+  # BELDEN - TWISTED PAIR / DATA CABLES
+  # ---------------------------------------------------------------------------
+
+  belden_1pr_twisted_shielded:
+    primary_pn: "CABLE-1PR-TW-SH"
+    manufacturer: "Belden"
+    mpn: "9841"
+    description: "1-pair 22AWG twisted, shielded, for RS-485/CAN"
+    fields:
+      pair_count: 1
+      conductor_count: 2
+      gauge_awg: 22
+      twist_per_foot: 6
+      shield_type: "foil + braid"
+      impedance_ohm: 120
+      capacitance_pf_ft: 12.8
+
+  belden_2pr_twisted_shielded:
+    primary_pn: "CABLE-2PR-TW-SH"
+    manufacturer: "Belden"
+    mpn: "9842"
+    description: "2-pair 22AWG twisted, shielded, for CAN/RS-485"
+    fields:
+      pair_count: 2
+      conductor_count: 4
+      gauge_awg: 22
+      twist_per_foot: 6
+      shield_type: "foil + braid"
+      impedance_ohm: 120
+
+  belden_cat5e:
+    primary_pn: "CABLE-CAT5E"
+    manufacturer: "Belden"
+    mpn: "1583A"
+    description: "Cat5e 4-pair UTP, 24AWG"
+    fields:
+      pair_count: 4
+      conductor_count: 8
+      gauge_awg: 24
+      category: "5e"
+      shielded: false
+
+  # ---------------------------------------------------------------------------
+  # HIGH-TEMPERATURE / SPECIALTY
+  # ---------------------------------------------------------------------------
+
+  ptfe_2c_20awg:
+    primary_pn: "CABLE-PTFE-2C-20"
+    manufacturer: "Alpha Wire"
+    mpn: "5855"
+    description: "2-conductor 20AWG PTFE insulated, high-temp"
+    fields:
+      conductor_count: 2
+      gauge_awg: 20
+      insulation_material: "PTFE"
+      temp_rating_c: 200
+      voltage_rating_v: 600
+
+  silicone_2c_18awg:
+    primary_pn: "CABLE-SIL-2C-18"
+    manufacturer: "Harbour Industries"
+    mpn: "S2818-2"
+    description: "2-conductor 18AWG silicone insulated"
+    fields:
+      conductor_count: 2
+      gauge_awg: 18
+      insulation_material: "silicone"
+      temp_rating_c: 200
+      flexibility: "high"
+
+  # ---------------------------------------------------------------------------
+  # HOOKUP WIRE (SINGLE CONDUCTOR)
+  # ---------------------------------------------------------------------------
+
+  hookup_22awg_pvc:
+    primary_pn: "WIRE-22-PVC"
+    manufacturer: "Alpha Wire"
+    mpn: "3051"
+    description: "Hookup wire 22AWG, PVC insulated"
+    fields:
+      conductor_count: 1
+      gauge_awg: 22
+      insulation_material: "PVC"
+      stranding: "7/30"
+      available_colors:
+        - "BK"
+        - "WH"
+        - "RD"
+        - "GN"
+        - "BU"
+        - "YE"
+        - "OR"
+        - "BR"
+
+  hookup_18awg_pvc:
+    primary_pn: "WIRE-18-PVC"
+    manufacturer: "Alpha Wire"
+    mpn: "3053"
+    description: "Hookup wire 18AWG, PVC insulated"
+    fields:
+      conductor_count: 1
+      gauge_awg: 18
+      insulation_material: "PVC"
+      stranding: "16/30"
+
+# =============================================================================
+# ACCESSORIES
+# =============================================================================
+# Heatshrink, labels, conduit, tape, and other harness accessories
+
+accessories:
+  # ---------------------------------------------------------------------------
+  # HEATSHRINK - ADHESIVE LINED (ENVIRONMENTAL SEALING)
+  # ---------------------------------------------------------------------------
+
+  heatshrink_1_8_adhesive:
+    primary_pn: "HS-1/8-BK-ADH"
+    manufacturer: "TE Connectivity"
+    mpn: "ATUM-1/8-0-STK"
+    description: "Adhesive heatshrink 1/8\" black, 4:1 ratio"
+    fields:
+      expanded_dia_in: 0.125
+      recovered_dia_in: 0.031
+      shrink_ratio: "4:1"
+      adhesive: true
+      color: "black"
+      wall_thickness_mm: 0.5
+
+  heatshrink_3_16_adhesive:
+    primary_pn: "HS-3/16-BK-ADH"
+    manufacturer: "TE Connectivity"
+    mpn: "ATUM-3/16-0-STK"
+    description: "Adhesive heatshrink 3/16\" black, 4:1 ratio"
+    fields:
+      expanded_dia_in: 0.1875
+      recovered_dia_in: 0.046
+      shrink_ratio: "4:1"
+      adhesive: true
+      color: "black"
+
+  heatshrink_1_4_adhesive:
+    primary_pn: "HS-1/4-BK-ADH"
+    manufacturer: "TE Connectivity"
+    mpn: "ATUM-1/4-0-STK"
+    description: "Adhesive heatshrink 1/4\" black, 4:1 ratio"
+    fields:
+      expanded_dia_in: 0.25
+      recovered_dia_in: 0.062
+      shrink_ratio: "4:1"
+      adhesive: true
+      color: "black"
+
+  heatshrink_3_8_adhesive:
+    primary_pn: "HS-3/8-BK-ADH"
+    manufacturer: "TE Connectivity"
+    mpn: "ATUM-3/8-0-STK"
+    description: "Adhesive heatshrink 3/8\" black, 4:1 ratio"
+    fields:
+      expanded_dia_in: 0.375
+      recovered_dia_in: 0.093
+      shrink_ratio: "4:1"
+      adhesive: true
+      color: "black"
+
+  heatshrink_1_2_adhesive:
+    primary_pn: "HS-1/2-BK-ADH"
+    manufacturer: "TE Connectivity"
+    mpn: "ATUM-1/2-0-STK"
+    description: "Adhesive heatshrink 1/2\" black, 4:1 ratio"
+    fields:
+      expanded_dia_in: 0.5
+      recovered_dia_in: 0.125
+      shrink_ratio: "4:1"
+      adhesive: true
+      color: "black"
+
+  heatshrink_3_4_adhesive:
+    primary_pn: "HS-3/4-BK-ADH"
+    manufacturer: "TE Connectivity"
+    mpn: "ATUM-3/4-0-STK"
+    description: "Adhesive heatshrink 3/4\" black, 4:1 ratio"
+    fields:
+      expanded_dia_in: 0.75
+      recovered_dia_in: 0.187
+      shrink_ratio: "4:1"
+      adhesive: true
+      color: "black"
+
+  # ---------------------------------------------------------------------------
+  # HEATSHRINK - STANDARD (NO ADHESIVE)
+  # ---------------------------------------------------------------------------
+
+  heatshrink_1_8_std:
+    primary_pn: "HS-1/8-BK"
+    manufacturer: "3M"
+    mpn: "FP-301-1/8-BK"
+    description: "Standard heatshrink 1/8\" black, 2:1 ratio"
+    fields:
+      expanded_dia_in: 0.125
+      recovered_dia_in: 0.062
+      shrink_ratio: "2:1"
+      adhesive: false
+      color: "black"
+
+  heatshrink_3_16_std:
+    primary_pn: "HS-3/16-BK"
+    manufacturer: "3M"
+    mpn: "FP-301-3/16-BK"
+    description: "Standard heatshrink 3/16\" black, 2:1 ratio"
+    fields:
+      expanded_dia_in: 0.1875
+      recovered_dia_in: 0.093
+      shrink_ratio: "2:1"
+      adhesive: false
+      color: "black"
+
+  heatshrink_1_4_std:
+    primary_pn: "HS-1/4-BK"
+    manufacturer: "3M"
+    mpn: "FP-301-1/4-BK"
+    description: "Standard heatshrink 1/4\" black, 2:1 ratio"
+    fields:
+      expanded_dia_in: 0.25
+      recovered_dia_in: 0.125
+      shrink_ratio: "2:1"
+      adhesive: false
+      color: "black"
+
+  # ---------------------------------------------------------------------------
+  # WIRE LABELS
+  # ---------------------------------------------------------------------------
+
+  label_wrap_small:
+    primary_pn: "LBL-WRAP-S"
+    manufacturer: "Brady"
+    mpn: "WML-311-292"
+    description: "Self-laminating wire marker, 1\" x 0.5\""
+    fields:
+      type: "self-laminating"
+      width_in: 1.0
+      height_in: 0.5
+      wire_dia_range_in: "0.06 - 0.20"
+      print_area_in: "0.5 x 0.5"
+
+  label_wrap_medium:
+    primary_pn: "LBL-WRAP-M"
+    manufacturer: "Brady"
+    mpn: "WML-511-292"
+    description: "Self-laminating wire marker, 1.5\" x 0.75\""
+    fields:
+      type: "self-laminating"
+      width_in: 1.5
+      height_in: 0.75
+      wire_dia_range_in: "0.12 - 0.32"
+
+  label_wrap_large:
+    primary_pn: "LBL-WRAP-L"
+    manufacturer: "Brady"
+    mpn: "WML-711-292"
+    description: "Self-laminating wire marker, 2\" x 1\""
+    fields:
+      type: "self-laminating"
+      width_in: 2.0
+      height_in: 1.0
+      wire_dia_range_in: "0.25 - 0.50"
+
+  label_flag:
+    primary_pn: "LBL-FLAG"
+    manufacturer: "Panduit"
+    mpn: "PLF1MA-M"
+    description: "Flag-style cable marker, 1\" flag"
+    fields:
+      type: "flag"
+      flag_size_in: 1.0
+
+  # ---------------------------------------------------------------------------
+  # CONDUIT / LOOM
+  # ---------------------------------------------------------------------------
+
+  split_loom_1_4:
+    primary_pn: "LOOM-1/4"
+    manufacturer: "Techflex"
+    mpn: "SWN0.25BK"
+    description: "Split wire loom 1/4\" ID, black"
+    fields:
+      id_in: 0.25
+      material: "polyethylene"
+      split: true
+      color: "black"
+      temp_rating_c: 80
+
+  split_loom_3_8:
+    primary_pn: "LOOM-3/8"
+    manufacturer: "Techflex"
+    mpn: "SWN0.38BK"
+    description: "Split wire loom 3/8\" ID, black"
+    fields:
+      id_in: 0.375
+      material: "polyethylene"
+      split: true
+      color: "black"
+
+  split_loom_1_2:
+    primary_pn: "LOOM-1/2"
+    manufacturer: "Techflex"
+    mpn: "SWN0.50BK"
+    description: "Split wire loom 1/2\" ID, black"
+    fields:
+      id_in: 0.5
+      material: "polyethylene"
+      split: true
+      color: "black"
+
+  braided_sleeve_1_4:
+    primary_pn: "SLEEVE-BR-1/4"
+    manufacturer: "Techflex"
+    mpn: "PTN0.25BK"
+    description: "Expandable braided sleeving 1/4\" nom, black"
+    fields:
+      nominal_dia_in: 0.25
+      expansion_range_in: "0.125 - 0.375"
+      material: "PET"
+      color: "black"
+
+  braided_sleeve_1_2:
+    primary_pn: "SLEEVE-BR-1/2"
+    manufacturer: "Techflex"
+    mpn: "PTN0.50BK"
+    description: "Expandable braided sleeving 1/2\" nom, black"
+    fields:
+      nominal_dia_in: 0.5
+      expansion_range_in: "0.25 - 0.75"
+      material: "PET"
+      color: "black"
+
+  # ---------------------------------------------------------------------------
+  # TAPE
+  # ---------------------------------------------------------------------------
+
+  tape_electrical:
+    primary_pn: "TAPE-ELEC-BK"
+    manufacturer: "3M"
+    mpn: "1700"
+    description: "Vinyl electrical tape 3/4\" black"
+    fields:
+      width_in: 0.75
+      thickness_mil: 7
+      material: "vinyl"
+      color: "black"
+      dielectric_strength_v: 7000
+
+  tape_harness:
+    primary_pn: "TAPE-HARNESS-BK"
+    manufacturer: "Tesa"
+    mpn: "51036"
+    description: "PET fleece harness tape 19mm black"
+    fields:
+      width_mm: 19
+      material: "PET fleece"
+      color: "black"
+      temp_rating_c: 150
+      abrasion_resistant: true
+
+  tape_harness_cloth:
+    primary_pn: "TAPE-CLOTH-BK"
+    manufacturer: "3M"
+    mpn: "2510"
+    description: "Cloth harness tape 3/4\" black"
+    fields:
+      width_in: 0.75
+      material: "cloth"
+      color: "black"
+      conformable: true
+
+  # ---------------------------------------------------------------------------
+  # TIE WRAPS / CABLE TIES
+  # ---------------------------------------------------------------------------
+
+  cable_tie_4in:
+    primary_pn: "TIE-4-BK"
+    manufacturer: "Panduit"
+    mpn: "PLT1M-M0"
+    description: "Cable tie 4\" black, 18lb"
+    fields:
+      length_in: 4.0
+      width_in: 0.10
+      tensile_strength_lb: 18
+      material: "nylon 6.6"
+      color: "black"
+
+  cable_tie_8in:
+    primary_pn: "TIE-8-BK"
+    manufacturer: "Panduit"
+    mpn: "PLT2S-M0"
+    description: "Cable tie 8\" black, 50lb"
+    fields:
+      length_in: 8.0
+      width_in: 0.19
+      tensile_strength_lb: 50
+      material: "nylon 6.6"
+      color: "black"
+
+  cable_tie_11in:
+    primary_pn: "TIE-11-BK"
+    manufacturer: "Panduit"
+    mpn: "PLT3S-M0"
+    description: "Cable tie 11\" black, 50lb"
+    fields:
+      length_in: 11.0
+      width_in: 0.19
+      tensile_strength_lb: 50
+      material: "nylon 6.6"
+      color: "black"
+
+  # ---------------------------------------------------------------------------
+  # DEUTSCH ACCESSORIES
+  # ---------------------------------------------------------------------------
+
+  deutsch_wedgelock_2:
+    primary_pn: "WL-DT-2"
+    manufacturer: "Deutsch"
+    mpn: "W2P"
+    description: "Wedgelock for DT04-2P / DT06-2S"
+    fields:
+      positions: 2
+
+  deutsch_wedgelock_3:
+    primary_pn: "WL-DT-3"
+    manufacturer: "Deutsch"
+    mpn: "W3P"
+    description: "Wedgelock for DT04-3P / DT06-3S"
+    fields:
+      positions: 3
+
+  deutsch_wedgelock_4:
+    primary_pn: "WL-DT-4"
+    manufacturer: "Deutsch"
+    mpn: "W4P"
+    description: "Wedgelock for DT04-4P / DT06-4S"
+    fields:
+      positions: 4
+
+  deutsch_wedgelock_6:
+    primary_pn: "WL-DT-6"
+    manufacturer: "Deutsch"
+    mpn: "W6P"
+    description: "Wedgelock for DT04-6P / DT06-6S"
+    fields:
+      positions: 6
+
+  deutsch_wedgelock_8:
+    primary_pn: "WL-DT-8"
+    manufacturer: "Deutsch"
+    mpn: "W8P"
+    description: "Wedgelock for DT04-8P / DT06-8S"
+    fields:
+      positions: 8
+
+  deutsch_wedgelock_12:
+    primary_pn: "WL-DT-12"
+    manufacturer: "Deutsch"
+    mpn: "W12P"
+    description: "Wedgelock for DT04-12P / DT06-12S"
+    fields:
+      positions: 12
+
+  deutsch_sealing_plug:
+    primary_pn: "SEAL-DT"
+    manufacturer: "Deutsch"
+    mpn: "114017"
+    description: "Cavity sealing plug for unused positions"
+    fields:
+      compatible_series: "DT"

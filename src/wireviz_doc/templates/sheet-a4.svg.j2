@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  A4 Landscape Sheet Template for WireViz Documentation
+  ======================================================
+
+  This is the main page template for WireViz documentation output.
+  It provides an A4 landscape layout (297mm x 210mm) with designated areas for:
+    - Wiring diagram (main content area)
+    - Bill of Materials (BOM) table
+    - Wiring table (connection list)
+    - Title block (engineering drawing style)
+
+  The layout follows standard engineering drawing conventions with the title
+  block positioned at the bottom right corner.
+
+  Sheet Dimensions:
+    - Paper size: A4 Landscape (297mm x 210mm)
+    - Drawing area: 287mm x 200mm (5mm margin all around)
+    - Title block: 180mm x 56mm (bottom right)
+    - Diagram area: Variable (main content area)
+    - Table areas: Configurable based on content
+
+  Required Jinja2 variables:
+    - metadata: Object containing document metadata
+        - metadata.id: Document identifier
+        - metadata.title: Document title
+        - metadata.revision: Revision number/letter
+        - metadata.date: Document date
+        - metadata.author: Author name
+        - metadata.project: Project name
+
+  Optional Jinja2 variables:
+    - metadata.approver: Approver name
+    - metadata.company: Company name
+    - metadata.sheet: Current sheet number (default: 1)
+    - metadata.total_sheets: Total sheets (default: 1)
+    - metadata.scale: Drawing scale (default: "NTS")
+    - metadata.description: Document description
+    - diagram_svg: Pre-rendered WireViz diagram SVG content
+    - bom: Bill of Materials data (for inclusion)
+    - wiring: Wiring table data (for inclusion)
+    - show_bom: Whether to show BOM on this sheet (default: true)
+    - show_wiring: Whether to show wiring table (default: false, usually page 2)
+    - page_type: "diagram", "bom", "wiring", or "combined" (default: "diagram")
+
+  Usage:
+    This template can be rendered with Jinja2 and the resulting SVG can be
+    converted to PDF or used directly in documentation systems.
+
+  Example:
+    from jinja2 import Environment, FileSystemLoader
+    env = Environment(loader=FileSystemLoader('templates'))
+    template = env.get_template('sheet-a4.svg.j2')
+    svg_output = template.render(metadata=metadata, diagram_svg=diagram_content)
+-->
+
+{#- ===== CONFIGURATION VARIABLES ===== -#}
+{%- set paper_width = 297 -%}
+{%- set paper_height = 210 -%}
+{%- set margin = 5 -%}
+{%- set drawing_width = paper_width - (2 * margin) -%}
+{%- set drawing_height = paper_height - (2 * margin) -%}
+
+{#- Title block dimensions and position -#}
+{%- set tb_width = 180 -%}
+{%- set tb_height = 56 -%}
+{%- set tb_x = drawing_width - tb_width -%}
+{%- set tb_y = drawing_height - tb_height -%}
+
+{#- Content area dimensions -#}
+{%- set content_width = drawing_width -%}
+{%- set content_height = tb_y - 2 -%}
+
+{#- Diagram area (when BOM is shown below) -#}
+{%- set diagram_height = content_height * 0.65 -%}
+{%- set table_area_y = diagram_height + 2 -%}
+{%- set table_area_height = content_height - diagram_height - 4 -%}
+
+{#- Page type handling -#}
+{%- set current_page_type = page_type | default('diagram') -%}
+
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="{{ paper_width }}mm"
+     height="{{ paper_height }}mm"
+     viewBox="0 0 {{ paper_width }} {{ paper_height }}"
+     version="1.1">
+
+  <!-- ===================================================================
+       METADATA AND DOCUMENT INFO
+       =================================================================== -->
+  <title>{{ metadata.id | default('Document') }} - {{ metadata.title | default('Untitled') }}</title>
+  <desc>
+    WireViz Documentation Sheet
+    Document: {{ metadata.id | default('N/A') }}
+    Title: {{ metadata.title | default('N/A') }}
+    Revision: {{ metadata.revision | default('N/A') }}
+    Date: {{ metadata.date | default('N/A') }}
+    Sheet: {{ metadata.sheet | default(1) }} of {{ metadata.total_sheets | default(1) }}
+  </desc>
+
+  <!-- ===================================================================
+       STYLE DEFINITIONS
+       =================================================================== -->
+  <defs>
+    <style type="text/css">
+      <![CDATA[
+        /* ===== PAGE STYLES ===== */
+        .sheet-background {
+          fill: #FFFFFF;
+        }
+
+        .sheet-border {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.7;
+        }
+
+        .sheet-border-inner {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.35;
+        }
+
+        .sheet-margin-line {
+          fill: none;
+          stroke: #CCCCCC;
+          stroke-width: 0.15;
+          stroke-dasharray: 2,1;
+        }
+
+        /* ===== AREA DIVIDERS ===== */
+        .area-divider {
+          stroke: #666666;
+          stroke-width: 0.3;
+          stroke-dasharray: 4,2;
+        }
+
+        .area-divider-solid {
+          stroke: #000000;
+          stroke-width: 0.35;
+        }
+
+        /* ===== TITLE BLOCK STYLES ===== */
+        .tb-border {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.5;
+        }
+
+        .tb-border-heavy {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.7;
+        }
+
+        .tb-divider {
+          stroke: #000000;
+          stroke-width: 0.35;
+        }
+
+        .tb-divider-light {
+          stroke: #666666;
+          stroke-width: 0.25;
+        }
+
+        .tb-label {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.2px;
+          fill: #666666;
+          text-anchor: start;
+        }
+
+        .tb-value {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 3.2px;
+          fill: #000000;
+          text-anchor: start;
+          font-weight: normal;
+        }
+
+        .tb-value-large {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 5px;
+          fill: #000000;
+          text-anchor: start;
+          font-weight: bold;
+        }
+
+        .tb-title {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 6px;
+          fill: #000000;
+          text-anchor: middle;
+          font-weight: bold;
+        }
+
+        .tb-doc-id {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 7px;
+          fill: #000000;
+          text-anchor: middle;
+          font-weight: bold;
+          letter-spacing: 0.5px;
+        }
+
+        .tb-revision {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 8px;
+          fill: #000000;
+          text-anchor: middle;
+          font-weight: bold;
+        }
+
+        .tb-company {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 4px;
+          fill: #333333;
+          text-anchor: middle;
+          font-weight: bold;
+        }
+
+        .tb-sheet-num {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 4px;
+          fill: #000000;
+          text-anchor: middle;
+        }
+
+        /* ===== AREA LABELS ===== */
+        .area-label {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 3px;
+          fill: #999999;
+          text-anchor: start;
+          font-style: italic;
+        }
+
+        .area-label-large {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 4px;
+          fill: #666666;
+          text-anchor: middle;
+          font-weight: bold;
+        }
+
+        /* ===== PLACEHOLDER STYLES ===== */
+        .placeholder-box {
+          fill: #F5F5F5;
+          stroke: #CCCCCC;
+          stroke-width: 0.25;
+          stroke-dasharray: 3,2;
+        }
+
+        .placeholder-text {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 5px;
+          fill: #AAAAAA;
+          text-anchor: middle;
+          font-style: italic;
+        }
+
+        /* ===== NOTES ===== */
+        .sheet-note {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.5px;
+          fill: #666666;
+          text-anchor: start;
+        }
+
+        .sheet-note-title {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 3px;
+          fill: #333333;
+          text-anchor: start;
+          font-weight: bold;
+        }
+
+        /* ===== ZONE MARKERS ===== */
+        .zone-marker {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 3px;
+          fill: #888888;
+          text-anchor: middle;
+        }
+      ]]>
+    </style>
+
+    <!-- Clipping path for diagram area -->
+    <clipPath id="diagram-clip">
+      <rect x="{{ margin }}" y="{{ margin }}"
+            width="{{ content_width }}" height="{{ diagram_height }}"/>
+    </clipPath>
+
+    <!-- Clipping path for table area -->
+    <clipPath id="table-clip">
+      <rect x="{{ margin }}" y="{{ margin + table_area_y }}"
+            width="{{ tb_x - 2 }}" height="{{ table_area_height }}"/>
+    </clipPath>
+  </defs>
+
+  <!-- ===================================================================
+       SHEET BACKGROUND AND BORDER
+       =================================================================== -->
+
+  <!-- White background -->
+  <rect x="0" y="0" width="{{ paper_width }}" height="{{ paper_height }}" class="sheet-background"/>
+
+  <!-- Outer border (paper edge simulation) -->
+  <rect x="1" y="1" width="{{ paper_width - 2 }}" height="{{ paper_height - 2 }}" class="sheet-border"/>
+
+  <!-- Drawing area border -->
+  <rect x="{{ margin }}" y="{{ margin }}"
+        width="{{ drawing_width }}" height="{{ drawing_height }}"
+        class="sheet-border-heavy"/>
+
+  <!-- ===================================================================
+       ZONE REFERENCE MARKERS (Optional engineering drawing feature)
+       =================================================================== -->
+  <!-- Horizontal zone markers (A-H) -->
+  {%- for i in range(8) %}
+  {%- set zone_y = margin + (drawing_height / 8 * i) + (drawing_height / 16) %}
+  <text x="{{ margin - 2.5 }}" y="{{ zone_y }}" class="zone-marker">{{ 'ABCDEFGH'[i] }}</text>
+  <text x="{{ margin + drawing_width + 2.5 }}" y="{{ zone_y }}" class="zone-marker">{{ 'ABCDEFGH'[i] }}</text>
+  {%- endfor %}
+
+  <!-- Vertical zone markers (1-12) -->
+  {%- for i in range(12) %}
+  {%- set zone_x = margin + (drawing_width / 12 * i) + (drawing_width / 24) %}
+  <text x="{{ zone_x }}" y="{{ margin - 1.5 }}" class="zone-marker">{{ i + 1 }}</text>
+  <text x="{{ zone_x }}" y="{{ margin + drawing_height + 3 }}" class="zone-marker">{{ i + 1 }}</text>
+  {%- endfor %}
+
+  <!-- ===================================================================
+       MAIN CONTENT AREA
+       =================================================================== -->
+  <g id="content-area" transform="translate({{ margin }}, {{ margin }})">
+
+    {% if current_page_type == 'diagram' or current_page_type == 'combined' %}
+    <!-- ===== DIAGRAM AREA ===== -->
+    <g id="diagram-area">
+
+      {% if diagram_svg %}
+      <!-- Embedded WireViz Diagram -->
+      <g id="wireviz-diagram" transform="translate(2, 2)">
+        {{ diagram_svg | safe }}
+      </g>
+      {% else %}
+      <!-- Diagram Placeholder -->
+      <rect x="2" y="2"
+            width="{{ content_width - 4 }}" height="{{ diagram_height - 4 }}"
+            class="placeholder-box"/>
+      <text x="{{ content_width / 2 }}" y="{{ diagram_height / 2 }}" class="placeholder-text">
+        WIRING DIAGRAM AREA
+      </text>
+      <text x="{{ content_width / 2 }}" y="{{ diagram_height / 2 + 6 }}" class="placeholder-text" style="font-size: 3px;">
+        WireViz generated diagram will be placed here
+      </text>
+      {% endif %}
+
+      <!-- Diagram area label -->
+      <text x="3" y="{{ diagram_height - 2 }}" class="area-label">DIAGRAM</text>
+
+    </g>
+    {% endif %}
+
+    {% if current_page_type == 'diagram' and show_bom | default(true) %}
+    <!-- ===== BOM TABLE AREA (Below diagram, left of title block) ===== -->
+    <g id="bom-area" transform="translate(0, {{ table_area_y }})">
+
+      <!-- Area divider line -->
+      <line x1="0" y1="0" x2="{{ tb_x - 2 }}" y2="0" class="area-divider-solid"/>
+
+      {% if bom and bom | length > 0 %}
+      <!-- BOM Table Content -->
+      <!-- Include bom-table.svg.j2 content here or reference it -->
+      <g id="bom-table" transform="translate(2, 2)">
+        {# BOM table would be included here via Jinja2 include or rendered separately #}
+        {% include 'bom-table-inline.svg.j2' ignore missing %}
+      </g>
+      {% else %}
+      <!-- BOM Placeholder -->
+      <rect x="2" y="2"
+            width="{{ tb_x - 6 }}" height="{{ table_area_height - 4 }}"
+            class="placeholder-box"/>
+      <text x="{{ (tb_x - 4) / 2 }}" y="{{ table_area_height / 2 }}" class="placeholder-text">
+        BILL OF MATERIALS
+      </text>
+      {% endif %}
+
+      <!-- BOM area label -->
+      <text x="3" y="{{ table_area_height - 2 }}" class="area-label">BOM</text>
+
+    </g>
+    {% endif %}
+
+    {% if current_page_type == 'wiring' or (current_page_type == 'combined' and show_wiring | default(false)) %}
+    <!-- ===== WIRING TABLE AREA ===== -->
+    <g id="wiring-area" transform="translate(0, {{ table_area_y if current_page_type == 'combined' else 2 }})">
+
+      {%- set wiring_area_height = table_area_height if current_page_type == 'combined' else (tb_y - 4) -%}
+
+      {% if current_page_type == 'combined' %}
+      <!-- Area divider line -->
+      <line x1="0" y1="0" x2="{{ tb_x - 2 }}" y2="0" class="area-divider-solid"/>
+      {% endif %}
+
+      {% if wiring and wiring | length > 0 %}
+      <!-- Wiring Table Content -->
+      <g id="wiring-table" transform="translate(2, 2)">
+        {# Wiring table would be included here via Jinja2 include or rendered separately #}
+        {% include 'wiring-table-inline.svg.j2' ignore missing %}
+      </g>
+      {% else %}
+      <!-- Wiring Table Placeholder -->
+      <rect x="2" y="2"
+            width="{{ tb_x - 6 }}" height="{{ wiring_area_height - 4 }}"
+            class="placeholder-box"/>
+      <text x="{{ (tb_x - 4) / 2 }}" y="{{ wiring_area_height / 2 }}" class="placeholder-text">
+        WIRING TABLE
+      </text>
+      <text x="{{ (tb_x - 4) / 2 }}" y="{{ wiring_area_height / 2 + 6 }}" class="placeholder-text" style="font-size: 3px;">
+        {% if current_page_type == 'diagram' %}
+        See Sheet {{ (metadata.sheet | default(1)) + 1 }} for wiring details
+        {% else %}
+        Connection details will be listed here
+        {% endif %}
+      </text>
+      {% endif %}
+
+      <!-- Wiring area label -->
+      <text x="3" y="{{ wiring_area_height - 2 }}" class="area-label">WIRING</text>
+
+    </g>
+    {% endif %}
+
+    {% if current_page_type == 'bom' %}
+    <!-- ===== FULL PAGE BOM ===== -->
+    <g id="bom-full-page" transform="translate(2, 2)">
+      {% if bom and bom | length > 0 %}
+      {# Full page BOM table #}
+      {% include 'bom-table-inline.svg.j2' ignore missing %}
+      {% else %}
+      <rect x="0" y="0"
+            width="{{ content_width - 4 }}" height="{{ tb_y - 6 }}"
+            class="placeholder-box"/>
+      <text x="{{ (content_width - 4) / 2 }}" y="{{ (tb_y - 6) / 2 }}" class="placeholder-text">
+        BILL OF MATERIALS
+      </text>
+      {% endif %}
+    </g>
+    {% endif %}
+
+    <!-- ===================================================================
+         TITLE BLOCK (Bottom Right)
+         =================================================================== -->
+    <g id="title-block" transform="translate({{ tb_x }}, {{ tb_y }})">
+
+      <!-- ===== OUTER BORDER ===== -->
+      <rect x="0" y="0" width="{{ tb_width }}" height="{{ tb_height }}" class="tb-border-heavy"/>
+
+      <!-- ===== COMPANY/LOGO SECTION (Top Left) ===== -->
+      <rect x="0" y="0" width="45" height="16" class="tb-border"/>
+      <text x="22.5" y="10" class="tb-company">{{ metadata.company | default('COMPANY NAME') }}</text>
+
+      <!-- ===== TITLE SECTION (Top Center) ===== -->
+      <rect x="45" y="0" width="110" height="16" class="tb-border"/>
+      <text x="46" y="4" class="tb-label">TITLE</text>
+      <text x="100" y="11" class="tb-title">{{ metadata.title | default('UNTITLED DOCUMENT') }}</text>
+
+      <!-- ===== REVISION SECTION (Top Right) ===== -->
+      <rect x="155" y="0" width="25" height="16" class="tb-border"/>
+      <text x="156" y="4" class="tb-label">REV</text>
+      <text x="167.5" y="12" class="tb-revision">{{ metadata.revision | default('-') }}</text>
+
+      <!-- ===== PROJECT SECTION (Middle Left) ===== -->
+      <rect x="0" y="16" width="45" height="12" class="tb-border"/>
+      <text x="1" y="19" class="tb-label">PROJECT</text>
+      <text x="1" y="25" class="tb-value">{{ metadata.project | default('') }}</text>
+
+      <!-- ===== DOCUMENT ID SECTION (Middle Center) ===== -->
+      <rect x="45" y="16" width="70" height="12" class="tb-border"/>
+      <text x="46" y="19" class="tb-label">DOCUMENT ID</text>
+      <text x="80" y="25" class="tb-doc-id">{{ metadata.id | default('DOC-000') }}</text>
+
+      <!-- ===== DATE SECTION (Middle Right Area 1) ===== -->
+      <rect x="115" y="16" width="40" height="12" class="tb-border"/>
+      <text x="116" y="19" class="tb-label">DATE</text>
+      <text x="116" y="25" class="tb-value-large">{{ metadata.date | default('YYYY-MM-DD') }}</text>
+
+      <!-- ===== SHEET NUMBER SECTION (Middle Right Area 2) ===== -->
+      <rect x="155" y="16" width="25" height="12" class="tb-border"/>
+      <text x="156" y="19" class="tb-label">SHEET</text>
+      <text x="167.5" y="25" class="tb-sheet-num">{{ metadata.sheet | default(1) }} OF {{ metadata.total_sheets | default(1) }}</text>
+
+      <!-- ===== AUTHOR SECTION (Bottom Left) ===== -->
+      <rect x="0" y="28" width="45" height="14" class="tb-border"/>
+      <text x="1" y="31" class="tb-label">DRAWN BY</text>
+      <text x="1" y="38" class="tb-value">{{ metadata.author | default('') }}</text>
+
+      <!-- ===== CHECKED BY SECTION (Bottom Middle Left) ===== -->
+      <rect x="45" y="28" width="45" height="14" class="tb-border"/>
+      <text x="46" y="31" class="tb-label">CHECKED BY</text>
+      <text x="46" y="38" class="tb-value">{{ metadata.checker | default('') }}</text>
+
+      <!-- ===== APPROVED BY SECTION (Bottom Middle Right) ===== -->
+      <rect x="90" y="28" width="45" height="14" class="tb-border"/>
+      <text x="91" y="31" class="tb-label">APPROVED BY</text>
+      {% if metadata.approver %}
+      <text x="91" y="38" class="tb-value">{{ metadata.approver }}</text>
+      {% else %}
+      <text x="91" y="38" class="tb-value" style="fill: #999999;">—</text>
+      {% endif %}
+
+      <!-- ===== SCALE/UNITS SECTION (Bottom Right) ===== -->
+      <rect x="135" y="28" width="45" height="14" class="tb-border"/>
+      <line x1="135" y1="35" x2="180" y2="35" class="tb-divider-light"/>
+      <text x="136" y="31" class="tb-label">SCALE</text>
+      <text x="136" y="34" class="tb-value">{{ metadata.scale | default('NTS') }}</text>
+      <text x="136" y="38" class="tb-label">UNITS</text>
+      <text x="136" y="41" class="tb-value">{{ metadata.units | default('mm') }}</text>
+
+      <!-- ===== DESCRIPTION/NOTES ROW ===== -->
+      <rect x="0" y="42" width="{{ tb_width }}" height="14" class="tb-border"/>
+      <text x="1" y="45" class="tb-label">DESCRIPTION / NOTES</text>
+      <text x="1" y="52" class="tb-value">{{ metadata.description | default('') | truncate(120) }}</text>
+
+    </g>
+
+    <!-- ===================================================================
+         NOTES AREA (Left of title block, at bottom)
+         =================================================================== -->
+    {% if notes and notes | length > 0 %}
+    <g id="notes-area" transform="translate(0, {{ tb_y }})">
+      <text x="2" y="4" class="sheet-note-title">NOTES:</text>
+      {% for note in notes %}
+      <text x="2" y="{{ 8 + (loop.index0 * 4) }}" class="sheet-note">{{ loop.index }}. {{ note | truncate(80) }}</text>
+      {% endfor %}
+    </g>
+    {% endif %}
+
+  </g>
+
+  <!-- ===================================================================
+       REVISION HISTORY (Optional, typically on separate sheet)
+       =================================================================== -->
+  {% if show_revision_history | default(false) and revision_history %}
+  <g id="revision-history" transform="translate({{ margin + 2 }}, {{ margin + tb_y - 30 }})">
+    <text x="0" y="0" class="sheet-note-title">REVISION HISTORY</text>
+    <text x="0" y="5" class="tb-label">REV</text>
+    <text x="10" y="5" class="tb-label">DATE</text>
+    <text x="35" y="5" class="tb-label">DESCRIPTION</text>
+    <text x="90" y="5" class="tb-label">BY</text>
+    {% for rev in revision_history %}
+    {%- set rev_y = 10 + (loop.index0 * 4) -%}
+    <text x="0" y="{{ rev_y }}" class="sheet-note">{{ rev.revision }}</text>
+    <text x="10" y="{{ rev_y }}" class="sheet-note">{{ rev.date }}</text>
+    <text x="35" y="{{ rev_y }}" class="sheet-note">{{ rev.description | truncate(40) }}</text>
+    <text x="90" y="{{ rev_y }}" class="sheet-note">{{ rev.author }}</text>
+    {% endfor %}
+  </g>
+  {% endif %}
+
+</svg>

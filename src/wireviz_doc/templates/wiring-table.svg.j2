@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Wiring Table Template
+  =====================
+  SVG template for rendering a wiring/connection table in engineering drawings.
+
+  This template generates a professional wiring table with the following columns:
+    - From: Source component/connector
+    - From Pin: Source pin/terminal identifier
+    - To: Destination component/connector
+    - To Pin: Destination pin/terminal identifier
+    - Cable: Cable identifier
+    - Core: Wire/core identifier within cable
+    - Label: Wire label/tag
+    - Color: Wire color code
+    - Pair: Twisted pair identifier (if applicable)
+    - Notes: Additional notes
+
+  Required Jinja2 variables:
+    - wiring: List of wiring connections, each containing:
+        - from_component: Source component name (string)
+        - from_pin: Source pin identifier (string)
+        - to_component: Destination component name (string)
+        - to_pin: Destination pin identifier (string)
+        - cable: Cable identifier (string)
+        - core: Core/conductor identifier (string)
+        - label: Wire label (string, optional)
+        - color: Wire color (string, optional)
+        - pair: Twisted pair ID (string/int, optional)
+        - notes: Additional notes (string, optional)
+
+  Optional Jinja2 variables:
+    - wiring_x: X position offset (default: 0)
+    - wiring_y: Y position offset (default: 0)
+    - wiring_width: Total table width in mm (default: 270)
+    - wiring_title: Table title (default: "WIRING TABLE")
+    - show_pair_grouping: Enable visual pair grouping (default: true)
+    - pair_colors: Dict of pair IDs to background colors
+
+  Column widths (proportional, totaling wiring_width):
+    - From: 35mm
+    - From Pin: 18mm
+    - To: 35mm
+    - To Pin: 18mm
+    - Cable: 25mm
+    - Core: 18mm
+    - Label: 25mm
+    - Color: 22mm
+    - Pair: 15mm
+    - Notes: 59mm
+
+  Row height: 5.5mm (header: 7mm)
+-->
+
+{#- Calculate dimensions -#}
+{%- set table_width = wiring_width | default(270) -%}
+{%- set row_height = 5.5 -%}
+{%- set header_height = 7 -%}
+{%- set show_pairs = show_pair_grouping | default(true) -%}
+
+{#- Column widths -#}
+{%- set col_from = 35 -%}
+{%- set col_from_pin = 18 -%}
+{%- set col_to = 35 -%}
+{%- set col_to_pin = 18 -%}
+{%- set col_cable = 25 -%}
+{%- set col_core = 18 -%}
+{%- set col_label = 25 -%}
+{%- set col_color = 22 -%}
+{%- set col_pair = 15 -%}
+{%- set col_notes = table_width - col_from - col_from_pin - col_to - col_to_pin - col_cable - col_core - col_label - col_color - col_pair -%}
+
+{#- Column X positions -#}
+{%- set x_from = 0 -%}
+{%- set x_from_pin = col_from -%}
+{%- set x_to = x_from_pin + col_from_pin -%}
+{%- set x_to_pin = x_to + col_to -%}
+{%- set x_cable = x_to_pin + col_to_pin -%}
+{%- set x_core = x_cable + col_cable -%}
+{%- set x_label = x_core + col_core -%}
+{%- set x_color = x_label + col_label -%}
+{%- set x_pair = x_color + col_color -%}
+{%- set x_notes = x_pair + col_pair -%}
+
+{#- Calculate total height -#}
+{%- set num_rows = wiring | length if wiring else 0 -%}
+{%- set table_height = header_height + (num_rows * row_height) + 2 -%}
+
+{#- Default pair background colors (subtle pastels for twisted pair grouping) -#}
+{%- set default_pair_colors = {
+    '1': '#FFF8E1',
+    '2': '#E8F5E9',
+    '3': '#E3F2FD',
+    '4': '#FCE4EC',
+    '5': '#F3E5F5',
+    '6': '#E0F7FA',
+    '7': '#FFF3E0',
+    '8': '#E8EAF6'
+} -%}
+{%- set pair_bg_colors = pair_colors | default(default_pair_colors) -%}
+
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="{{ table_width }}mm"
+     height="{{ table_height + 10 }}mm"
+     viewBox="0 0 {{ table_width }} {{ table_height + 10 }}">
+
+  <defs>
+    <!-- Wiring Table Styles -->
+    <style type="text/css">
+      <![CDATA[
+        /* Table structure */
+        .wt-border {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.5;
+        }
+
+        .wt-border-heavy {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.7;
+        }
+
+        .wt-header-bg {
+          fill: #D0D0D0;
+          stroke: none;
+        }
+
+        .wt-row-even {
+          fill: #FFFFFF;
+          stroke: none;
+        }
+
+        .wt-row-odd {
+          fill: #FAFAFA;
+          stroke: none;
+        }
+
+        .wt-divider-v {
+          stroke: #000000;
+          stroke-width: 0.3;
+        }
+
+        .wt-divider-v-major {
+          stroke: #000000;
+          stroke-width: 0.45;
+        }
+
+        .wt-divider-h {
+          stroke: #CCCCCC;
+          stroke-width: 0.2;
+        }
+
+        .wt-divider-header {
+          stroke: #000000;
+          stroke-width: 0.5;
+        }
+
+        /* Text styles */
+        .wt-title {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 4px;
+          font-weight: bold;
+          fill: #000000;
+          text-anchor: start;
+        }
+
+        .wt-header-text {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.4px;
+          font-weight: bold;
+          fill: #333333;
+          text-anchor: middle;
+        }
+
+        .wt-cell-text {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.3px;
+          fill: #000000;
+          text-anchor: start;
+        }
+
+        .wt-cell-text-center {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.3px;
+          fill: #000000;
+          text-anchor: middle;
+        }
+
+        .wt-cell-text-bold {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.3px;
+          font-weight: bold;
+          fill: #000000;
+          text-anchor: start;
+        }
+
+        .wt-cell-text-small {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2px;
+          fill: #555555;
+          text-anchor: start;
+        }
+
+        .wt-pin-text {
+          font-family: 'Courier New', Courier, monospace;
+          font-size: 2.3px;
+          fill: #000000;
+          text-anchor: middle;
+        }
+
+        .wt-color-swatch {
+          stroke: #333333;
+          stroke-width: 0.2;
+        }
+
+        .wt-pair-indicator {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.2px;
+          font-weight: bold;
+          fill: #666666;
+          text-anchor: middle;
+        }
+
+        /* Pair grouping backgrounds */
+        .wt-pair-bg {
+          stroke: none;
+          opacity: 0.6;
+        }
+      ]]>
+    </style>
+
+    <!-- Color swatches for common wire colors -->
+    <!-- These can be referenced by color name -->
+  </defs>
+
+  <!-- Transform group for positioning -->
+  <g transform="translate({{ wiring_x | default(0) }}, {{ wiring_y | default(0) }})">
+
+    <!-- ===== TABLE TITLE ===== -->
+    <text x="0" y="5" class="wt-title">{{ wiring_title | default('WIRING TABLE') }}</text>
+
+    <!-- Main table group (offset below title) -->
+    <g transform="translate(0, 8)">
+
+      <!-- ===== HEADER ROW BACKGROUND ===== -->
+      <rect x="0" y="0" width="{{ table_width }}" height="{{ header_height }}" class="wt-header-bg"/>
+
+      <!-- ===== ROW BACKGROUNDS (with twisted pair grouping) ===== -->
+      {% for wire in wiring %}
+      {%- set row_y = header_height + (loop.index0 * row_height) -%}
+      {%- set wire_pair = wire.pair | default('') | string -%}
+      {% if show_pairs and wire_pair and wire_pair in pair_bg_colors %}
+      <!-- Pair {{ wire_pair }} grouped row -->
+      <rect x="0" y="{{ row_y }}" width="{{ table_width }}" height="{{ row_height }}"
+            class="wt-pair-bg" fill="{{ pair_bg_colors[wire_pair] }}"/>
+      {% else %}
+      <rect x="0" y="{{ row_y }}" width="{{ table_width }}" height="{{ row_height }}"
+            class="{% if loop.index0 % 2 == 0 %}wt-row-even{% else %}wt-row-odd{% endif %}"/>
+      {% endif %}
+      {% endfor %}
+
+      <!-- ===== OUTER BORDER ===== -->
+      <rect x="0" y="0" width="{{ table_width }}" height="{{ table_height }}" class="wt-border-heavy"/>
+
+      <!-- ===== HEADER DIVIDER LINE ===== -->
+      <line x1="0" y1="{{ header_height }}" x2="{{ table_width }}" y2="{{ header_height }}" class="wt-divider-header"/>
+
+      <!-- ===== VERTICAL COLUMN DIVIDERS ===== -->
+      <!-- From | From Pin (major divider after "From" group) -->
+      <line x1="{{ x_from_pin }}" y1="0" x2="{{ x_from_pin }}" y2="{{ table_height }}" class="wt-divider-v"/>
+      <!-- From Pin | To (major divider between source and destination) -->
+      <line x1="{{ x_to }}" y1="0" x2="{{ x_to }}" y2="{{ table_height }}" class="wt-divider-v-major"/>
+      <!-- To | To Pin -->
+      <line x1="{{ x_to_pin }}" y1="0" x2="{{ x_to_pin }}" y2="{{ table_height }}" class="wt-divider-v"/>
+      <!-- To Pin | Cable (major divider after "To" group) -->
+      <line x1="{{ x_cable }}" y1="0" x2="{{ x_cable }}" y2="{{ table_height }}" class="wt-divider-v-major"/>
+      <!-- Cable | Core -->
+      <line x1="{{ x_core }}" y1="0" x2="{{ x_core }}" y2="{{ table_height }}" class="wt-divider-v"/>
+      <!-- Core | Label -->
+      <line x1="{{ x_label }}" y1="0" x2="{{ x_label }}" y2="{{ table_height }}" class="wt-divider-v"/>
+      <!-- Label | Color -->
+      <line x1="{{ x_color }}" y1="0" x2="{{ x_color }}" y2="{{ table_height }}" class="wt-divider-v"/>
+      <!-- Color | Pair -->
+      <line x1="{{ x_pair }}" y1="0" x2="{{ x_pair }}" y2="{{ table_height }}" class="wt-divider-v"/>
+      <!-- Pair | Notes -->
+      <line x1="{{ x_notes }}" y1="0" x2="{{ x_notes }}" y2="{{ table_height }}" class="wt-divider-v-major"/>
+
+      <!-- ===== HORIZONTAL ROW DIVIDERS ===== -->
+      {% for wire in wiring %}
+      {%- if not loop.last -%}
+      {%- set line_y = header_height + ((loop.index0 + 1) * row_height) -%}
+      <line x1="0" y1="{{ line_y }}" x2="{{ table_width }}" y2="{{ line_y }}" class="wt-divider-h"/>
+      {%- endif -%}
+      {% endfor %}
+
+      <!-- ===== HEADER TEXT ===== -->
+      {%- set header_text_y = header_height / 2 + 0.8 -%}
+      <text x="{{ x_from + col_from / 2 }}" y="{{ header_text_y }}" class="wt-header-text">FROM</text>
+      <text x="{{ x_from_pin + col_from_pin / 2 }}" y="{{ header_text_y }}" class="wt-header-text">PIN</text>
+      <text x="{{ x_to + col_to / 2 }}" y="{{ header_text_y }}" class="wt-header-text">TO</text>
+      <text x="{{ x_to_pin + col_to_pin / 2 }}" y="{{ header_text_y }}" class="wt-header-text">PIN</text>
+      <text x="{{ x_cable + col_cable / 2 }}" y="{{ header_text_y }}" class="wt-header-text">CABLE</text>
+      <text x="{{ x_core + col_core / 2 }}" y="{{ header_text_y }}" class="wt-header-text">CORE</text>
+      <text x="{{ x_label + col_label / 2 }}" y="{{ header_text_y }}" class="wt-header-text">LABEL</text>
+      <text x="{{ x_color + col_color / 2 }}" y="{{ header_text_y }}" class="wt-header-text">COLOR</text>
+      <text x="{{ x_pair + col_pair / 2 }}" y="{{ header_text_y }}" class="wt-header-text">PAIR</text>
+      <text x="{{ x_notes + col_notes / 2 }}" y="{{ header_text_y }}" class="wt-header-text">NOTES</text>
+
+      <!-- ===== DATA ROWS ===== -->
+      {% for wire in wiring %}
+      {%- set row_y = header_height + (loop.index0 * row_height) -%}
+      {%- set text_y = row_y + row_height / 2 + 0.7 -%}
+      {%- set cell_padding = 1 -%}
+      {%- set wire_color_code = wire.color | default('') -%}
+
+      <!-- Row {{ loop.index }}: {{ wire.from_component | default('') }} -> {{ wire.to_component | default('') }} -->
+      <g class="wt-row" data-row="{{ loop.index }}">
+
+        <!-- From Component -->
+        <text x="{{ x_from + cell_padding }}" y="{{ text_y }}" class="wt-cell-text-bold">{{ wire.from_component | default('') | truncate(18) }}</text>
+
+        <!-- From Pin (centered, monospace) -->
+        <text x="{{ x_from_pin + col_from_pin / 2 }}" y="{{ text_y }}" class="wt-pin-text">{{ wire.from_pin | default('') }}</text>
+
+        <!-- To Component -->
+        <text x="{{ x_to + cell_padding }}" y="{{ text_y }}" class="wt-cell-text-bold">{{ wire.to_component | default('') | truncate(18) }}</text>
+
+        <!-- To Pin (centered, monospace) -->
+        <text x="{{ x_to_pin + col_to_pin / 2 }}" y="{{ text_y }}" class="wt-pin-text">{{ wire.to_pin | default('') }}</text>
+
+        <!-- Cable ID -->
+        <text x="{{ x_cable + cell_padding }}" y="{{ text_y }}" class="wt-cell-text">{{ wire.cable | default('') | truncate(12) }}</text>
+
+        <!-- Core -->
+        <text x="{{ x_core + col_core / 2 }}" y="{{ text_y }}" class="wt-cell-text-center">{{ wire.core | default('') }}</text>
+
+        <!-- Label -->
+        <text x="{{ x_label + cell_padding }}" y="{{ text_y }}" class="wt-cell-text">{{ wire.label | default('') | truncate(12) }}</text>
+
+        <!-- Color (with optional swatch) -->
+        {% if wire_color_code %}
+        {#- Try to render a color swatch if it looks like a color code -#}
+        {%- set color_map = {
+            'BK': '#000000', 'BLACK': '#000000',
+            'WH': '#FFFFFF', 'WHITE': '#FFFFFF',
+            'RD': '#FF0000', 'RED': '#FF0000',
+            'GN': '#00AA00', 'GREEN': '#00AA00',
+            'BU': '#0000FF', 'BLUE': '#0000FF',
+            'YE': '#FFDD00', 'YELLOW': '#FFDD00',
+            'OR': '#FF8800', 'ORANGE': '#FF8800',
+            'BR': '#8B4513', 'BROWN': '#8B4513',
+            'GY': '#808080', 'GRAY': '#808080', 'GREY': '#808080',
+            'PK': '#FF69B4', 'PINK': '#FF69B4',
+            'VT': '#8B00FF', 'VIOLET': '#8B00FF', 'PU': '#800080', 'PURPLE': '#800080'
+        } -%}
+        {%- set swatch_color = color_map.get(wire_color_code | upper, '') -%}
+        {% if swatch_color %}
+        <rect x="{{ x_color + 1 }}" y="{{ row_y + 1.2 }}" width="3" height="3"
+              class="wt-color-swatch" fill="{{ swatch_color }}"/>
+        <text x="{{ x_color + 5.5 }}" y="{{ text_y }}" class="wt-cell-text">{{ wire_color_code }}</text>
+        {% else %}
+        <text x="{{ x_color + cell_padding }}" y="{{ text_y }}" class="wt-cell-text">{{ wire_color_code | truncate(10) }}</text>
+        {% endif %}
+        {% endif %}
+
+        <!-- Pair (centered with indicator) -->
+        {% if wire.pair %}
+        <text x="{{ x_pair + col_pair / 2 }}" y="{{ text_y }}" class="wt-pair-indicator">P{{ wire.pair }}</text>
+        {% endif %}
+
+        <!-- Notes -->
+        <text x="{{ x_notes + cell_padding }}" y="{{ text_y }}" class="wt-cell-text-small">{{ wire.notes | default('') | truncate(30) }}</text>
+
+      </g>
+      {% endfor %}
+
+      <!-- ===== EMPTY TABLE MESSAGE ===== -->
+      {% if not wiring or wiring | length == 0 %}
+      <text x="{{ table_width / 2 }}" y="{{ header_height + 10 }}"
+            class="wt-cell-text-center" style="fill: #999999; font-style: italic;">
+        No wiring connections defined
+      </text>
+      {% endif %}
+
+    </g>
+
+    <!-- ===== LEGEND FOR PAIR GROUPING ===== -->
+    {% if show_pairs and wiring %}
+    {%- set pairs_used = [] -%}
+    {% for wire in wiring %}
+      {%- if wire.pair and wire.pair | string not in pairs_used -%}
+        {%- set _ = pairs_used.append(wire.pair | string) -%}
+      {%- endif -%}
+    {% endfor %}
+    {% if pairs_used | length > 0 %}
+    <g transform="translate(0, {{ table_height + 10 }})">
+      <text x="0" y="3" class="wt-cell-text-small" style="font-weight: bold;">Twisted Pair Legend:</text>
+      {% for pair_id in pairs_used %}
+      {%- set legend_x = 30 + (loop.index0 * 18) -%}
+      <rect x="{{ legend_x }}" y="0" width="4" height="4" fill="{{ pair_bg_colors.get(pair_id, '#EEEEEE') }}" class="wt-color-swatch"/>
+      <text x="{{ legend_x + 5.5 }}" y="3" class="wt-cell-text-small">P{{ pair_id }}</text>
+      {% endfor %}
+    </g>
+    {% endif %}
+    {% endif %}
+
+  </g>
+</svg>

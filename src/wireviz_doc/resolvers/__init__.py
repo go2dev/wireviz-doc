@@ -1,0 +1,1 @@
+"""Resolvers for wireviz-doc."""

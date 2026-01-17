@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Title Block Component Template
+  ==============================
+  A standalone title block component for engineering drawings.
+  Can be included in sheet templates using Jinja2 include directive.
+
+  Standard engineering drawing title block layout following ISO 7200 conventions.
+  Designed for bottom-right placement on A4 landscape sheets.
+
+  Required Jinja2 variables:
+    - metadata.id: Document identifier (e.g., "WH-001-A")
+    - metadata.title: Document title
+    - metadata.revision: Revision number/letter (e.g., "A", "1.0")
+    - metadata.date: Document date (ISO format preferred)
+    - metadata.author: Author name
+    - metadata.project: Project name
+
+  Optional Jinja2 variables:
+    - metadata.approver: Approver name (displayed if present)
+    - metadata.company: Company name
+    - metadata.sheet: Current sheet number
+    - metadata.total_sheets: Total number of sheets
+    - title_block_x: X position offset (default: 0)
+    - title_block_y: Y position offset (default: 0)
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="180mm"
+     height="56mm"
+     viewBox="0 0 180 56">
+
+  <defs>
+    <!-- Title Block Styles -->
+    <style type="text/css">
+      <![CDATA[
+        /* Base styles for title block */
+        .tb-border {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.5;
+        }
+
+        .tb-border-heavy {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.7;
+        }
+
+        .tb-divider {
+          stroke: #000000;
+          stroke-width: 0.35;
+        }
+
+        .tb-divider-light {
+          stroke: #666666;
+          stroke-width: 0.25;
+        }
+
+        /* Text styles */
+        .tb-label {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.2px;
+          fill: #666666;
+          text-anchor: start;
+        }
+
+        .tb-value {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 3.2px;
+          fill: #000000;
+          text-anchor: start;
+          font-weight: normal;
+        }
+
+        .tb-value-large {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 5px;
+          fill: #000000;
+          text-anchor: start;
+          font-weight: bold;
+        }
+
+        .tb-title {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 6px;
+          fill: #000000;
+          text-anchor: middle;
+          font-weight: bold;
+        }
+
+        .tb-doc-id {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 7px;
+          fill: #000000;
+          text-anchor: middle;
+          font-weight: bold;
+          letter-spacing: 0.5px;
+        }
+
+        .tb-revision {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 8px;
+          fill: #000000;
+          text-anchor: middle;
+          font-weight: bold;
+        }
+
+        .tb-company {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 4px;
+          fill: #333333;
+          text-anchor: middle;
+          font-weight: bold;
+        }
+
+        .tb-sheet-num {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 4px;
+          fill: #000000;
+          text-anchor: middle;
+        }
+      ]]>
+    </style>
+  </defs>
+
+  <!-- Transform group for positioning (use title_block_x/y if provided) -->
+  <g transform="translate(0, 0)">
+
+    <!-- ===== OUTER BORDER ===== -->
+    <rect x="0" y="0" width="180" height="56" class="tb-border-heavy"/>
+
+    <!-- ===== COMPANY/LOGO SECTION (Top Left) ===== -->
+    <!-- Company logo area: 45mm x 16mm -->
+    <rect x="0" y="0" width="45" height="16" class="tb-border"/>
+    <text x="22.5" y="10" class="tb-company">ACME Electronics</text>
+
+    <!-- ===== TITLE SECTION (Top Center) ===== -->
+    <!-- Title area: 110mm x 16mm -->
+    <rect x="45" y="0" width="110" height="16" class="tb-border"/>
+    <text x="45" y="4" class="tb-label">TITLE</text>
+    <text x="100" y="11" class="tb-title">Main Control Panel Wiring Harness</text>
+
+    <!-- ===== REVISION SECTION (Top Right) ===== -->
+    <!-- Revision area: 25mm x 16mm -->
+    <rect x="155" y="0" width="25" height="16" class="tb-border"/>
+    <text x="156" y="4" class="tb-label">REV</text>
+    <text x="167.5" y="12" class="tb-revision">B</text>
+
+    <!-- ===== PROJECT SECTION (Middle Left) ===== -->
+    <!-- Project area: 45mm x 12mm -->
+    <rect x="0" y="16" width="45" height="12" class="tb-border"/>
+    <text x="1" y="19" class="tb-label">PROJECT</text>
+    <text x="1" y="25" class="tb-value">Industrial Controller v2.0</text>
+
+    <!-- ===== DOCUMENT ID SECTION (Middle Center) ===== -->
+    <!-- Document ID area: 70mm x 12mm -->
+    <rect x="45" y="16" width="70" height="12" class="tb-border"/>
+    <text x="46" y="19" class="tb-label">DOCUMENT ID</text>
+    <text x="80" y="25" class="tb-doc-id">WH-2024-001</text>
+
+    <!-- ===== DATE SECTION (Middle Right Area 1) ===== -->
+    <!-- Date area: 40mm x 12mm -->
+    <rect x="115" y="16" width="40" height="12" class="tb-border"/>
+    <text x="116" y="19" class="tb-label">DATE</text>
+    <text x="116" y="25" class="tb-value-large">2024-01-15</text>
+
+    <!-- ===== SHEET NUMBER SECTION (Middle Right Area 2) ===== -->
+    <!-- Sheet area: 25mm x 12mm -->
+    <rect x="155" y="16" width="25" height="12" class="tb-border"/>
+    <text x="156" y="19" class="tb-label">SHEET</text>
+    <text x="167.5" y="25" class="tb-sheet-num">1 OF 2</text>
+
+    <!-- ===== AUTHOR SECTION (Bottom Left) ===== -->
+    <!-- Author area: 45mm x 14mm -->
+    <rect x="0" y="28" width="45" height="14" class="tb-border"/>
+    <text x="1" y="31" class="tb-label">DRAWN BY</text>
+    <text x="1" y="38" class="tb-value">J. Smith</text>
+
+    <!-- ===== CHECKED BY SECTION (Bottom Middle Left) ===== -->
+    <!-- Checked area: 45mm x 14mm -->
+    <rect x="45" y="28" width="45" height="14" class="tb-border"/>
+    <text x="46" y="31" class="tb-label">CHECKED BY</text>
+    <text x="46" y="38" class="tb-value">M. Johnson</text>
+
+    <!-- ===== APPROVED BY SECTION (Bottom Middle Right) ===== -->
+    <!-- Approved area: 45mm x 14mm -->
+    <rect x="90" y="28" width="45" height="14" class="tb-border"/>
+    <text x="91" y="31" class="tb-label">APPROVED BY</text>
+    
+    <text x="91" y="38" class="tb-value">R. Williams</text>
+    
+
+    <!-- ===== NOTES/SCALE SECTION (Bottom Right) ===== -->
+    <!-- Notes area: 45mm x 14mm, split into two rows -->
+    <rect x="135" y="28" width="45" height="14" class="tb-border"/>
+
+    <!-- Scale sub-section -->
+    <line x1="135" y1="35" x2="180" y2="35" class="tb-divider-light"/>
+    <text x="136" y="31" class="tb-label">SCALE</text>
+    <text x="136" y="34" class="tb-value">NTS</text>
+
+    <!-- Units sub-section -->
+    <text x="136" y="38" class="tb-label">UNITS</text>
+    <text x="136" y="41" class="tb-value">mm</text>
+
+    <!-- ===== BOTTOM ROW: ADDITIONAL FIELDS ===== -->
+    <!-- Description/Notes area: Full width, 14mm -->
+    <rect x="0" y="42" width="180" height="14" class="tb-border"/>
+    <text x="1" y="45" class="tb-label">DESCRIPTION / NOTES</text>
+    <text x="1" y="52" class="tb-value">Primary wiring harness for main control panel assembly. Includes power, signal, and communication connections.</text>
+
+  </g>
+</svg>

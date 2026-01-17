@@ -1,0 +1,83 @@
+# =============================================================================
+# Simple Harness - Minimal Example
+# =============================================================================
+#
+# This example demonstrates the minimum viable harness definition.
+# It connects two connectors with a single cable - the simplest possible case.
+#
+# Use this as a starting point for new harness designs.
+# =============================================================================
+
+metadata:
+  id: HAR-SIMPLE-001
+  title: "Simple Power Cable"
+  revision: "A"
+  date: "2026-01-17"
+  author: "J. Engineer"
+
+# Minimal parts library - just what we need
+parts:
+  # Generic 2-pin connector
+  conn_2pin:
+    primary_pn: "CONN-2P-001"
+    manufacturer: "Generic"
+    mpn: "2PIN-HOUSING"
+    description: "2-position connector housing"
+
+  # Simple 2-conductor cable
+  cable_2c:
+    primary_pn: "CABLE-2C-001"
+    manufacturer: "Generic"
+    mpn: "2COND-18AWG"
+    description: "2-conductor 18AWG cable"
+
+connectors:
+  # Source connector
+  J1:
+    part: conn_2pin
+    type: "receptacle"
+    pincount: 2
+    pinlabels:
+      - "PWR"
+      - "GND"
+
+  # Destination connector
+  J2:
+    part: conn_2pin
+    type: "plug"
+    pincount: 2
+    pinlabels:
+      - "PWR"
+      - "GND"
+
+cables:
+  # Single cable connecting J1 to J2
+  W1:
+    part: cable_2c
+    wirecount: 2
+    gauge: "18 AWG"
+    length: "500mm"
+    cores:
+      - index: 1
+        color: "RD"
+        label: "PWR"
+      - index: 2
+        color: "BK"
+        label: "GND"
+
+connections:
+  # Power connection
+  - from_connector: J1
+    from_pin: 1
+    cable: W1
+    core: 1
+    to_connector: J2
+    to_pin: 1
+
+  # Ground connection
+  - from_connector: J1
+    from_pin: 2
+    cable: W1
+    core: 2
+    to_connector: J2
+    to_pin: 2

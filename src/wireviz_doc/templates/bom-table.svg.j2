@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Bill of Materials (BOM) Table Template
+  =======================================
+  SVG template for rendering a Bill of Materials table in engineering drawings.
+
+  This template generates a professional BOM table with the following columns:
+    - Item: Sequential item number
+    - Part Number: Internal part number
+    - Manufacturer: Component manufacturer name
+    - MPN: Manufacturer part number
+    - Description: Component description
+    - Qty: Quantity required
+    - Alternates: Alternative part numbers (if applicable)
+
+  Required Jinja2 variables:
+    - bom: List of BOM items, each containing:
+        - item: Item number (integer)
+        - part_number: Internal part number (string)
+        - manufacturer: Manufacturer name (string)
+        - mpn: Manufacturer part number (string)
+        - description: Component description (string)
+        - qty: Quantity (integer or string with units)
+        - alternates: Alternative parts (string, optional)
+
+  Optional Jinja2 variables:
+    - bom_x: X position offset (default: 0)
+    - bom_y: Y position offset (default: 0)
+    - bom_width: Total table width in mm (default: 270)
+    - bom_title: Table title (default: "BILL OF MATERIALS")
+    - show_alternates: Whether to show alternates column (default: true)
+
+  Column widths (proportional, totaling bom_width):
+    - Item: 8mm
+    - Part Number: 35mm
+    - Manufacturer: 40mm
+    - MPN: 45mm
+    - Description: 82mm (or 117mm if no alternates)
+    - Qty: 15mm
+    - Alternates: 45mm (optional)
+
+  Row height: 6mm (header: 8mm)
+-->
+
+{#- Calculate dimensions -#}
+{%- set table_width = bom_width | default(270) -%}
+{%- set row_height = 6 -%}
+{%- set header_height = 8 -%}
+{%- set show_alt = show_alternates | default(true) -%}
+
+{#- Column widths -#}
+{%- set col_item = 8 -%}
+{%- set col_pn = 35 -%}
+{%- set col_mfr = 40 -%}
+{%- set col_mpn = 45 -%}
+{%- set col_qty = 15 -%}
+{%- set col_alt = 45 if show_alt else 0 -%}
+{%- set col_desc = table_width - col_item - col_pn - col_mfr - col_mpn - col_qty - col_alt -%}
+
+{#- Column X positions -#}
+{%- set x_item = 0 -%}
+{%- set x_pn = col_item -%}
+{%- set x_mfr = x_pn + col_pn -%}
+{%- set x_mpn = x_mfr + col_mfr -%}
+{%- set x_desc = x_mpn + col_mpn -%}
+{%- set x_qty = x_desc + col_desc -%}
+{%- set x_alt = x_qty + col_qty -%}
+
+{#- Calculate total height -#}
+{%- set num_rows = bom | length if bom else 0 -%}
+{%- set table_height = header_height + (num_rows * row_height) + 2 -%}
+
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="{{ table_width }}mm"
+     height="{{ table_height + 10 }}mm"
+     viewBox="0 0 {{ table_width }} {{ table_height + 10 }}">
+
+  <defs>
+    <!-- BOM Table Styles -->
+    <style type="text/css">
+      <![CDATA[
+        /* Table structure */
+        .bom-border {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.5;
+        }
+
+        .bom-border-heavy {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.7;
+        }
+
+        .bom-header-bg {
+          fill: #E8E8E8;
+          stroke: none;
+        }
+
+        .bom-row-even {
+          fill: #FFFFFF;
+          stroke: none;
+        }
+
+        .bom-row-odd {
+          fill: #F8F8F8;
+          stroke: none;
+        }
+
+        .bom-divider-v {
+          stroke: #000000;
+          stroke-width: 0.35;
+        }
+
+        .bom-divider-h {
+          stroke: #CCCCCC;
+          stroke-width: 0.25;
+        }
+
+        .bom-divider-header {
+          stroke: #000000;
+          stroke-width: 0.5;
+        }
+
+        /* Text styles */
+        .bom-title {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 4px;
+          font-weight: bold;
+          fill: #000000;
+          text-anchor: start;
+        }
+
+        .bom-header-text {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.8px;
+          font-weight: bold;
+          fill: #333333;
+          text-anchor: middle;
+        }
+
+        .bom-cell-text {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.5px;
+          fill: #000000;
+          text-anchor: start;
+        }
+
+        .bom-cell-text-center {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.5px;
+          fill: #000000;
+          text-anchor: middle;
+        }
+
+        .bom-cell-text-small {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.2px;
+          fill: #444444;
+          text-anchor: start;
+        }
+
+        .bom-item-num {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.8px;
+          font-weight: bold;
+          fill: #000000;
+          text-anchor: middle;
+        }
+
+        .bom-qty {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.8px;
+          font-weight: bold;
+          fill: #000000;
+          text-anchor: middle;
+        }
+      ]]>
+    </style>
+  </defs>
+
+  <!-- Transform group for positioning -->
+  <g transform="translate({{ bom_x | default(0) }}, {{ bom_y | default(0) }})">
+
+    <!-- ===== TABLE TITLE ===== -->
+    <text x="0" y="5" class="bom-title">{{ bom_title | default('BILL OF MATERIALS') }}</text>
+
+    <!-- Main table group (offset below title) -->
+    <g transform="translate(0, 8)">
+
+      <!-- ===== HEADER ROW BACKGROUND ===== -->
+      <rect x="0" y="0" width="{{ table_width }}" height="{{ header_height }}" class="bom-header-bg"/>
+
+      <!-- ===== ROW BACKGROUNDS ===== -->
+      {% for item in bom %}
+      {%- set row_y = header_height + (loop.index0 * row_height) -%}
+      <rect x="0" y="{{ row_y }}" width="{{ table_width }}" height="{{ row_height }}"
+            class="{% if loop.index0 % 2 == 0 %}bom-row-even{% else %}bom-row-odd{% endif %}"/>
+      {% endfor %}
+
+      <!-- ===== OUTER BORDER ===== -->
+      <rect x="0" y="0" width="{{ table_width }}" height="{{ table_height }}" class="bom-border-heavy"/>
+
+      <!-- ===== HEADER DIVIDER LINE ===== -->
+      <line x1="0" y1="{{ header_height }}" x2="{{ table_width }}" y2="{{ header_height }}" class="bom-divider-header"/>
+
+      <!-- ===== VERTICAL COLUMN DIVIDERS ===== -->
+      <!-- Item | Part Number -->
+      <line x1="{{ x_pn }}" y1="0" x2="{{ x_pn }}" y2="{{ table_height }}" class="bom-divider-v"/>
+      <!-- Part Number | Manufacturer -->
+      <line x1="{{ x_mfr }}" y1="0" x2="{{ x_mfr }}" y2="{{ table_height }}" class="bom-divider-v"/>
+      <!-- Manufacturer | MPN -->
+      <line x1="{{ x_mpn }}" y1="0" x2="{{ x_mpn }}" y2="{{ table_height }}" class="bom-divider-v"/>
+      <!-- MPN | Description -->
+      <line x1="{{ x_desc }}" y1="0" x2="{{ x_desc }}" y2="{{ table_height }}" class="bom-divider-v"/>
+      <!-- Description | Qty -->
+      <line x1="{{ x_qty }}" y1="0" x2="{{ x_qty }}" y2="{{ table_height }}" class="bom-divider-v"/>
+      {% if show_alt %}
+      <!-- Qty | Alternates -->
+      <line x1="{{ x_alt }}" y1="0" x2="{{ x_alt }}" y2="{{ table_height }}" class="bom-divider-v"/>
+      {% endif %}
+
+      <!-- ===== HORIZONTAL ROW DIVIDERS ===== -->
+      {% for item in bom %}
+      {%- if not loop.last -%}
+      {%- set line_y = header_height + ((loop.index0 + 1) * row_height) -%}
+      <line x1="0" y1="{{ line_y }}" x2="{{ table_width }}" y2="{{ line_y }}" class="bom-divider-h"/>
+      {%- endif -%}
+      {% endfor %}
+
+      <!-- ===== HEADER TEXT ===== -->
+      {%- set header_text_y = header_height / 2 + 1 -%}
+      <text x="{{ x_item + col_item / 2 }}" y="{{ header_text_y }}" class="bom-header-text">ITEM</text>
+      <text x="{{ x_pn + col_pn / 2 }}" y="{{ header_text_y }}" class="bom-header-text">PART NUMBER</text>
+      <text x="{{ x_mfr + col_mfr / 2 }}" y="{{ header_text_y }}" class="bom-header-text">MANUFACTURER</text>
+      <text x="{{ x_mpn + col_mpn / 2 }}" y="{{ header_text_y }}" class="bom-header-text">MPN</text>
+      <text x="{{ x_desc + col_desc / 2 }}" y="{{ header_text_y }}" class="bom-header-text">DESCRIPTION</text>
+      <text x="{{ x_qty + col_qty / 2 }}" y="{{ header_text_y }}" class="bom-header-text">QTY</text>
+      {% if show_alt %}
+      <text x="{{ x_alt + col_alt / 2 }}" y="{{ header_text_y }}" class="bom-header-text">ALTERNATES</text>
+      {% endif %}
+
+      <!-- ===== DATA ROWS ===== -->
+      {% for item in bom %}
+      {%- set row_y = header_height + (loop.index0 * row_height) -%}
+      {%- set text_y = row_y + row_height / 2 + 0.8 -%}
+      {%- set cell_padding = 1.5 -%}
+
+      <!-- Row {{ loop.index }}: {{ item.description | default('') | truncate(30) }} -->
+      <g class="bom-row" data-item="{{ item.item | default(loop.index) }}">
+        <!-- Item Number (centered) -->
+        <text x="{{ x_item + col_item / 2 }}" y="{{ text_y }}" class="bom-item-num">{{ item.item | default(loop.index) }}</text>
+
+        <!-- Part Number -->
+        <text x="{{ x_pn + cell_padding }}" y="{{ text_y }}" class="bom-cell-text">{{ item.part_number | default('') | truncate(18) }}</text>
+
+        <!-- Manufacturer -->
+        <text x="{{ x_mfr + cell_padding }}" y="{{ text_y }}" class="bom-cell-text">{{ item.manufacturer | default('') | truncate(20) }}</text>
+
+        <!-- MPN -->
+        <text x="{{ x_mpn + cell_padding }}" y="{{ text_y }}" class="bom-cell-text">{{ item.mpn | default('') | truncate(22) }}</text>
+
+        <!-- Description -->
+        <text x="{{ x_desc + cell_padding }}" y="{{ text_y }}" class="bom-cell-text">{{ item.description | default('') | truncate(45) }}</text>
+
+        <!-- Quantity (centered) -->
+        <text x="{{ x_qty + col_qty / 2 }}" y="{{ text_y }}" class="bom-qty">{{ item.qty | default(1) }}</text>
+
+        {% if show_alt %}
+        <!-- Alternates -->
+        <text x="{{ x_alt + cell_padding }}" y="{{ text_y }}" class="bom-cell-text-small">{{ item.alternates | default('') | truncate(22) }}</text>
+        {% endif %}
+      </g>
+      {% endfor %}
+
+      <!-- ===== EMPTY TABLE MESSAGE ===== -->
+      {% if not bom or bom | length == 0 %}
+      <text x="{{ table_width / 2 }}" y="{{ header_height + 10 }}"
+            class="bom-cell-text-center" style="fill: #999999; font-style: italic;">
+        No items in Bill of Materials
+      </text>
+      {% endif %}
+
+    </g>
+  </g>
+</svg>

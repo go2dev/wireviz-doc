@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  A4 Landscape Sheet Template for WireViz Documentation
+  ======================================================
+
+  This is the main page template for WireViz documentation output.
+  It provides an A4 landscape layout (297mm x 210mm) with designated areas for:
+    - Wiring diagram (main content area)
+    - Bill of Materials (BOM) table
+    - Wiring table (connection list)
+    - Title block (engineering drawing style)
+
+  The layout follows standard engineering drawing conventions with the title
+  block positioned at the bottom right corner.
+
+  Sheet Dimensions:
+    - Paper size: A4 Landscape (297mm x 210mm)
+    - Drawing area: 287mm x 200mm (5mm margin all around)
+    - Title block: 180mm x 56mm (bottom right)
+    - Diagram area: Variable (main content area)
+    - Table areas: Configurable based on content
+
+  Required Jinja2 variables:
+    - metadata: Object containing document metadata
+        - metadata.id: Document identifier
+        - metadata.title: Document title
+        - metadata.revision: Revision number/letter
+        - metadata.date: Document date
+        - metadata.author: Author name
+        - metadata.project: Project name
+
+  Optional Jinja2 variables:
+    - metadata.approver: Approver name
+    - metadata.company: Company name
+    - metadata.sheet: Current sheet number (default: 1)
+    - metadata.total_sheets: Total sheets (default: 1)
+    - metadata.scale: Drawing scale (default: "NTS")
+    - metadata.description: Document description
+    - diagram_svg: Pre-rendered WireViz diagram SVG content
+    - bom: Bill of Materials data (for inclusion)
+    - wiring: Wiring table data (for inclusion)
+    - show_bom: Whether to show BOM on this sheet (default: true)
+    - show_wiring: Whether to show wiring table (default: false, usually page 2)
+    - page_type: "diagram", "bom", "wiring", or "combined" (default: "diagram")
+
+  Usage:
+    This template can be rendered with Jinja2 and the resulting SVG can be
+    converted to PDF or used directly in documentation systems.
+
+  Example:
+    from jinja2 import Environment, FileSystemLoader
+    env = Environment(loader=FileSystemLoader('templates'))
+    template = env.get_template('sheet-a4.svg.j2')
+    svg_output = template.render(metadata=metadata, diagram_svg=diagram_content)
+--><svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="297mm"
+     height="210mm"
+     viewBox="0 0 297 210"
+     version="1.1">
+
+  <!-- ===================================================================
+       METADATA AND DOCUMENT INFO
+       =================================================================== -->
+  <title>WH-2024-001 - Main Control Panel Wiring Harness</title>
+  <desc>
+    WireViz Documentation Sheet
+    Document: WH-2024-001
+    Title: Main Control Panel Wiring Harness
+    Revision: B
+    Date: 2024-01-15
+    Sheet: 1 of 2
+  </desc>
+
+  <!-- ===================================================================
+       STYLE DEFINITIONS
+       =================================================================== -->
+  <defs>
+    <style type="text/css">
+      <![CDATA[
+        /* ===== PAGE STYLES ===== */
+        .sheet-background {
+          fill: #FFFFFF;
+        }
+
+        .sheet-border {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.7;
+        }
+
+        .sheet-border-inner {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.35;
+        }
+
+        .sheet-margin-line {
+          fill: none;
+          stroke: #CCCCCC;
+          stroke-width: 0.15;
+          stroke-dasharray: 2,1;
+        }
+
+        /* ===== AREA DIVIDERS ===== */
+        .area-divider {
+          stroke: #666666;
+          stroke-width: 0.3;
+          stroke-dasharray: 4,2;
+        }
+
+        .area-divider-solid {
+          stroke: #000000;
+          stroke-width: 0.35;
+        }
+
+        /* ===== TITLE BLOCK STYLES ===== */
+        .tb-border {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.5;
+        }
+
+        .tb-border-heavy {
+          fill: none;
+          stroke: #000000;
+          stroke-width: 0.7;
+        }
+
+        .tb-divider {
+          stroke: #000000;
+          stroke-width: 0.35;
+        }
+
+        .tb-divider-light {
+          stroke: #666666;
+          stroke-width: 0.25;
+        }
+
+        .tb-label {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.2px;
+          fill: #666666;
+          text-anchor: start;
+        }
+
+        .tb-value {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 3.2px;
+          fill: #000000;
+          text-anchor: start;
+          font-weight: normal;
+        }
+
+        .tb-value-large {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 5px;
+          fill: #000000;
+          text-anchor: start;
+          font-weight: bold;
+        }
+
+        .tb-title {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 6px;
+          fill: #000000;
+          text-anchor: middle;
+          font-weight: bold;
+        }
+
+        .tb-doc-id {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 7px;
+          fill: #000000;
+          text-anchor: middle;
+          font-weight: bold;
+          letter-spacing: 0.5px;
+        }
+
+        .tb-revision {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 8px;
+          fill: #000000;
+          text-anchor: middle;
+          font-weight: bold;
+        }
+
+        .tb-company {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 4px;
+          fill: #333333;
+          text-anchor: middle;
+          font-weight: bold;
+        }
+
+        .tb-sheet-num {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 4px;
+          fill: #000000;
+          text-anchor: middle;
+        }
+
+        /* ===== AREA LABELS ===== */
+        .area-label {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 3px;
+          fill: #999999;
+          text-anchor: start;
+          font-style: italic;
+        }
+
+        .area-label-large {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 4px;
+          fill: #666666;
+          text-anchor: middle;
+          font-weight: bold;
+        }
+
+        /* ===== PLACEHOLDER STYLES ===== */
+        .placeholder-box {
+          fill: #F5F5F5;
+          stroke: #CCCCCC;
+          stroke-width: 0.25;
+          stroke-dasharray: 3,2;
+        }
+
+        .placeholder-text {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 5px;
+          fill: #AAAAAA;
+          text-anchor: middle;
+          font-style: italic;
+        }
+
+        /* ===== NOTES ===== */
+        .sheet-note {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2.5px;
+          fill: #666666;
+          text-anchor: start;
+        }
+
+        .sheet-note-title {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 3px;
+          fill: #333333;
+          text-anchor: start;
+          font-weight: bold;
+        }
+
+        /* ===== ZONE MARKERS ===== */
+        .zone-marker {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 3px;
+          fill: #888888;
+          text-anchor: middle;
+        }
+      ]]>
+    </style>
+
+    <!-- Clipping path for diagram area -->
+    <clipPath id="diagram-clip">
+      <rect x="5" y="5"
+            width="287" height="92.3"/>
+    </clipPath>
+
+    <!-- Clipping path for table area -->
+    <clipPath id="table-clip">
+      <rect x="5" y="99.3"
+            width="105" height="45.7"/>
+    </clipPath>
+  </defs>
+
+  <!-- ===================================================================
+       SHEET BACKGROUND AND BORDER
+       =================================================================== -->
+
+  <!-- White background -->
+  <rect x="0" y="0" width="297" height="210" class="sheet-background"/>
+
+  <!-- Outer border (paper edge simulation) -->
+  <rect x="1" y="1" width="295" height="208" class="sheet-border"/>
+
+  <!-- Drawing area border -->
+  <rect x="5" y="5"
+        width="287" height="200"
+        class="sheet-border-heavy"/>
+
+  <!-- ===================================================================
+       ZONE REFERENCE MARKERS (Optional engineering drawing feature)
+       =================================================================== -->
+  <!-- Horizontal zone markers (A-H) -->
+  <text x="2.5" y="17.5" class="zone-marker">A</text>
+  <text x="294.5" y="17.5" class="zone-marker">A</text>
+  <text x="2.5" y="42.5" class="zone-marker">B</text>
+  <text x="294.5" y="42.5" class="zone-marker">B</text>
+  <text x="2.5" y="67.5" class="zone-marker">C</text>
+  <text x="294.5" y="67.5" class="zone-marker">C</text>
+  <text x="2.5" y="92.5" class="zone-marker">D</text>
+  <text x="294.5" y="92.5" class="zone-marker">D</text>
+  <text x="2.5" y="117.5" class="zone-marker">E</text>
+  <text x="294.5" y="117.5" class="zone-marker">E</text>
+  <text x="2.5" y="142.5" class="zone-marker">F</text>
+  <text x="294.5" y="142.5" class="zone-marker">F</text>
+  <text x="2.5" y="167.5" class="zone-marker">G</text>
+  <text x="294.5" y="167.5" class="zone-marker">G</text>
+  <text x="2.5" y="192.5" class="zone-marker">H</text>
+  <text x="294.5" y="192.5" class="zone-marker">H</text>
+
+  <!-- Vertical zone markers (1-12) -->
+  <text x="16.958333333333336" y="3.5" class="zone-marker">1</text>
+  <text x="16.958333333333336" y="208" class="zone-marker">1</text>
+  <text x="40.875" y="3.5" class="zone-marker">2</text>
+  <text x="40.875" y="208" class="zone-marker">2</text>
+  <text x="64.79166666666667" y="3.5" class="zone-marker">3</text>
+  <text x="64.79166666666667" y="208" class="zone-marker">3</text>
+  <text x="88.70833333333333" y="3.5" class="zone-marker">4</text>
+  <text x="88.70833333333333" y="208" class="zone-marker">4</text>
+  <text x="112.625" y="3.5" class="zone-marker">5</text>
+  <text x="112.625" y="208" class="zone-marker">5</text>
+  <text x="136.54166666666669" y="3.5" class="zone-marker">6</text>
+  <text x="136.54166666666669" y="208" class="zone-marker">6</text>
+  <text x="160.45833333333334" y="3.5" class="zone-marker">7</text>
+  <text x="160.45833333333334" y="208" class="zone-marker">7</text>
+  <text x="184.37500000000003" y="3.5" class="zone-marker">8</text>
+  <text x="184.37500000000003" y="208" class="zone-marker">8</text>
+  <text x="208.29166666666669" y="3.5" class="zone-marker">9</text>
+  <text x="208.29166666666669" y="208" class="zone-marker">9</text>
+  <text x="232.20833333333334" y="3.5" class="zone-marker">10</text>
+  <text x="232.20833333333334" y="208" class="zone-marker">10</text>
+  <text x="256.125" y="3.5" class="zone-marker">11</text>
+  <text x="256.125" y="208" class="zone-marker">11</text>
+  <text x="280.0416666666667" y="3.5" class="zone-marker">12</text>
+  <text x="280.0416666666667" y="208" class="zone-marker">12</text>
+
+  <!-- ===================================================================
+       MAIN CONTENT AREA
+       =================================================================== -->
+  <g id="content-area" transform="translate(5, 5)">
+
+    
+    <!-- ===== DIAGRAM AREA ===== -->
+    <g id="diagram-area">
+
+      
+      <!-- Diagram Placeholder -->
+      <rect x="2" y="2"
+            width="283" height="88.3"
+            class="placeholder-box"/>
+      <text x="143.5" y="46.15" class="placeholder-text">
+        WIRING DIAGRAM AREA
+      </text>
+      <text x="143.5" y="52.15" class="placeholder-text" style="font-size: 3px;">
+        WireViz generated diagram will be placed here
+      </text>
+      
+
+      <!-- Diagram area label -->
+      <text x="3" y="90.3" class="area-label">DIAGRAM</text>
+
+    </g>
+    
+
+    
+    <!-- ===== BOM TABLE AREA (Below diagram, left of title block) ===== -->
+    <g id="bom-area" transform="translate(0, 94.3)">
+
+      <!-- Area divider line -->
+      <line x1="0" y1="0" x2="105" y2="0" class="area-divider-solid"/>
+
+      
+      <!-- BOM Table Content -->
+      <!-- Include bom-table.svg.j2 content here or reference it -->
+      <g id="bom-table" transform="translate(2, 2)">
+        
+        
+      </g>
+      
+
+      <!-- BOM area label -->
+      <text x="3" y="43.7" class="area-label">BOM</text>
+
+    </g>
+    
+
+    
+
+    
+
+    <!-- ===================================================================
+         TITLE BLOCK (Bottom Right)
+         =================================================================== -->
+    <g id="title-block" transform="translate(107, 144)">
+
+      <!-- ===== OUTER BORDER ===== -->
+      <rect x="0" y="0" width="180" height="56" class="tb-border-heavy"/>
+
+      <!-- ===== COMPANY/LOGO SECTION (Top Left) ===== -->
+      <rect x="0" y="0" width="45" height="16" class="tb-border"/>
+      <text x="22.5" y="10" class="tb-company">ACME Electronics</text>
+
+      <!-- ===== TITLE SECTION (Top Center) ===== -->
+      <rect x="45" y="0" width="110" height="16" class="tb-border"/>
+      <text x="46" y="4" class="tb-label">TITLE</text>
+      <text x="100" y="11" class="tb-title">Main Control Panel Wiring Harness</text>
+
+      <!-- ===== REVISION SECTION (Top Right) ===== -->
+      <rect x="155" y="0" width="25" height="16" class="tb-border"/>
+      <text x="156" y="4" class="tb-label">REV</text>
+      <text x="167.5" y="12" class="tb-revision">B</text>
+
+      <!-- ===== PROJECT SECTION (Middle Left) ===== -->
+      <rect x="0" y="16" width="45" height="12" class="tb-border"/>
+      <text x="1" y="19" class="tb-label">PROJECT</text>
+      <text x="1" y="25" class="tb-value">Industrial Controller v2.0</text>
+
+      <!-- ===== DOCUMENT ID SECTION (Middle Center) ===== -->
+      <rect x="45" y="16" width="70" height="12" class="tb-border"/>
+      <text x="46" y="19" class="tb-label">DOCUMENT ID</text>
+      <text x="80" y="25" class="tb-doc-id">WH-2024-001</text>
+
+      <!-- ===== DATE SECTION (Middle Right Area 1) ===== -->
+      <rect x="115" y="16" width="40" height="12" class="tb-border"/>
+      <text x="116" y="19" class="tb-label">DATE</text>
+      <text x="116" y="25" class="tb-value-large">2024-01-15</text>
+
+      <!-- ===== SHEET NUMBER SECTION (Middle Right Area 2) ===== -->
+      <rect x="155" y="16" width="25" height="12" class="tb-border"/>
+      <text x="156" y="19" class="tb-label">SHEET</text>
+      <text x="167.5" y="25" class="tb-sheet-num">1 OF 2</text>
+
+      <!-- ===== AUTHOR SECTION (Bottom Left) ===== -->
+      <rect x="0" y="28" width="45" height="14" class="tb-border"/>
+      <text x="1" y="31" class="tb-label">DRAWN BY</text>
+      <text x="1" y="38" class="tb-value">J. Smith</text>
+
+      <!-- ===== CHECKED BY SECTION (Bottom Middle Left) ===== -->
+      <rect x="45" y="28" width="45" height="14" class="tb-border"/>
+      <text x="46" y="31" class="tb-label">CHECKED BY</text>
+      <text x="46" y="38" class="tb-value">M. Johnson</text>
+
+      <!-- ===== APPROVED BY SECTION (Bottom Middle Right) ===== -->
+      <rect x="90" y="28" width="45" height="14" class="tb-border"/>
+      <text x="91" y="31" class="tb-label">APPROVED BY</text>
+      
+      <text x="91" y="38" class="tb-value">R. Williams</text>
+      
+
+      <!-- ===== SCALE/UNITS SECTION (Bottom Right) ===== -->
+      <rect x="135" y="28" width="45" height="14" class="tb-border"/>
+      <line x1="135" y1="35" x2="180" y2="35" class="tb-divider-light"/>
+      <text x="136" y="31" class="tb-label">SCALE</text>
+      <text x="136" y="34" class="tb-value">NTS</text>
+      <text x="136" y="38" class="tb-label">UNITS</text>
+      <text x="136" y="41" class="tb-value">mm</text>
+
+      <!-- ===== DESCRIPTION/NOTES ROW ===== -->
+      <rect x="0" y="42" width="180" height="14" class="tb-border"/>
+      <text x="1" y="45" class="tb-label">DESCRIPTION / NOTES</text>
+      <text x="1" y="52" class="tb-value">Primary wiring harness for main control panel assembly. Includes power, signal, and communication connections.</text>
+
+    </g>
+
+    <!-- ===================================================================
+         NOTES AREA (Left of title block, at bottom)
+         =================================================================== -->
+    
+    <g id="notes-area" transform="translate(0, 144)">
+      <text x="2" y="4" class="sheet-note-title">NOTES:</text>
+      
+      <text x="2" y="8" class="sheet-note">1. All connections to be crimped using approved tooling.</text>
+      
+      <text x="2" y="12" class="sheet-note">2. Apply heat shrink tubing to all exposed terminals.</text>
+      
+      <text x="2" y="16" class="sheet-note">3. Cable routing per installation drawing DWG-2024-002.</text>
+      
+      <text x="2" y="20" class="sheet-note">4. Refer to test procedure TP-2024-001 for continuity testing.</text>
+      
+    </g>
+    
+
+  </g>
+
+  <!-- ===================================================================
+       REVISION HISTORY (Optional, typically on separate sheet)
+       =================================================================== -->
+  
+
+</svg>

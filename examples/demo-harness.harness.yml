@@ -1,0 +1,619 @@
+# =============================================================================
+# Demo Harness - Full-Featured Example
+# =============================================================================
+#
+# This example demonstrates all features of the extended harness YAML schema.
+# It models a sensor interface harness connecting an ECU to various sensors
+# via environmentally sealed connectors.
+#
+# Harness ID: HAR-DEMO-001
+# Application: Engine Bay Sensor Harness
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# METADATA SECTION
+# -----------------------------------------------------------------------------
+# Document identification and revision control information.
+# All fields except 'id' and 'title' are optional but recommended.
+#
+metadata:
+  # Unique harness identifier - used for file naming and cross-references
+  id: HAR-DEMO-001
+
+  # Human-readable title for the document
+  title: "Engine Bay Sensor Interface Harness"
+
+  # Revision string - typically follows A, B, C... or semantic versioning
+  revision: "A"
+
+  # Document date in ISO 8601 format
+  date: "2026-01-17"
+
+  # Primary author
+  author: "J. Engineer"
+
+  # Approver for release (optional)
+  approver: "M. Manager"
+
+  # Project or program name (optional)
+  project: "EV-Platform-2026"
+
+  # Custom fields for organization-specific metadata (optional)
+  # These pass through to outputs but aren't processed by wvdoc
+  custom_fields:
+    department: "Electrical Engineering"
+    cost_center: "CC-4200"
+    export_control: "EAR99"
+
+# -----------------------------------------------------------------------------
+# PARTS LIBRARY
+# -----------------------------------------------------------------------------
+# Defines all parts used in this harness with full specifications.
+# Parts are referenced by their 'id' in connectors, cables, and accessories.
+#
+# Each part can have:
+#   - primary_pn: Your organization's part number
+#   - manufacturer: Component manufacturer
+#   - mpn: Manufacturer part number
+#   - description: Human-readable description
+#   - alternates: List of approved alternate sources
+#   - fields: Arbitrary key-value data for your workflows
+#   - image: Image specification for documentation
+#
+parts:
+  # ---------------------------------------------------------------------------
+  # CONNECTORS
+  # ---------------------------------------------------------------------------
+
+  # Molex Mini-Fit Jr - Common automotive/industrial power connector
+  # 4-position receptacle housing
+  conn_minifit_4pos:
+    primary_pn: "CONN-MF-4R"
+    manufacturer: "Molex"
+    mpn: "39-01-2040"
+    description: "Mini-Fit Jr 4-pos receptacle housing, 4.2mm pitch"
+    alternates:
+      - manufacturer: "TE Connectivity"
+        mpn: "1-480424-0"
+        vendor_sku: "A1234"
+        url: "https://www.te.com/example"
+    fields:
+      gender: "female"
+      pitch_mm: 4.2
+      current_rating_a: 13
+      voltage_rating_v: 600
+      ip_rating: "IP20"
+    image:
+      src: "images/molex_39012040.png"
+      caption: "Molex Mini-Fit Jr 4-pos"
+      height: 40
+
+  # Molex Mini-Fit Jr mating header
+  conn_minifit_4pos_header:
+    primary_pn: "CONN-MF-4H"
+    manufacturer: "Molex"
+    mpn: "39-30-1040"
+    description: "Mini-Fit Jr 4-pos header, vertical, through-hole"
+    fields:
+      gender: "male"
+      pitch_mm: 4.2
+      mounting: "through-hole"
+
+  # Deutsch DT Series - Environmentally sealed automotive connector
+  # 4-position plug (male pins)
+  conn_deutsch_dt04_4p:
+    primary_pn: "CONN-DT-4P"
+    manufacturer: "Deutsch"
+    mpn: "DT04-4P"
+    description: "DT Series 4-pos plug, gray"
+    alternates:
+      - manufacturer: "TE Connectivity"
+        mpn: "DT04-4P-E004"
+    fields:
+      gender: "male"
+      series: "DT"
+      ip_rating: "IP67"
+      color: "gray"
+      temp_range_c: "-55 to +125"
+    image:
+      src: "images/deutsch_dt04-4p.png"
+      caption: "Deutsch DT04-4P"
+
+  # Deutsch DT Series - Mating receptacle (female sockets)
+  conn_deutsch_dt06_4s:
+    primary_pn: "CONN-DT-4S"
+    manufacturer: "Deutsch"
+    mpn: "DT06-4S"
+    description: "DT Series 4-pos receptacle, gray"
+    fields:
+      gender: "female"
+      series: "DT"
+      ip_rating: "IP67"
+
+  # Deutsch DT 2-position - For simple sensor connections
+  conn_deutsch_dt04_2p:
+    primary_pn: "CONN-DT-2P"
+    manufacturer: "Deutsch"
+    mpn: "DT04-2P"
+    description: "DT Series 2-pos plug, gray"
+    fields:
+      gender: "male"
+      series: "DT"
+      ip_rating: "IP67"
+
+  conn_deutsch_dt06_2s:
+    primary_pn: "CONN-DT-2S"
+    manufacturer: "Deutsch"
+    mpn: "DT06-2S"
+    description: "DT Series 2-pos receptacle, gray"
+    fields:
+      gender: "female"
+      series: "DT"
+      ip_rating: "IP67"
+
+  # ---------------------------------------------------------------------------
+  # CABLES
+  # ---------------------------------------------------------------------------
+
+  # 4-conductor shielded cable for sensor signals
+  # Suitable for CAN bus, analog sensors, or general I/O
+  cable_4c_shielded:
+    primary_pn: "CABLE-4C-SH-22"
+    manufacturer: "Alpha Wire"
+    mpn: "5304C"
+    description: "4-conductor 22AWG shielded, PVC jacket"
+    alternates:
+      - manufacturer: "Belden"
+        mpn: "9534"
+    fields:
+      conductor_count: 4
+      gauge_awg: 22
+      shield_type: "foil + drain"
+      jacket_material: "PVC"
+      jacket_color: "gray"
+      temp_rating_c: 80
+      voltage_rating_v: 300
+      ul_rating: "UL2464"
+      od_mm: 5.8
+    image:
+      src: "images/alpha_5304c.png"
+
+  # 2-conductor unshielded for power/ground
+  cable_2c_power:
+    primary_pn: "CABLE-2C-18"
+    manufacturer: "Alpha Wire"
+    mpn: "1172C"
+    description: "2-conductor 18AWG, PVC jacket"
+    fields:
+      conductor_count: 2
+      gauge_awg: 18
+      jacket_material: "PVC"
+      jacket_color: "black"
+
+  # Twisted pair cable for differential signals (CAN bus)
+  cable_2pr_twisted:
+    primary_pn: "CABLE-2PR-TW-22"
+    manufacturer: "Belden"
+    mpn: "9842"
+    description: "2-pair 22AWG twisted, shielded, for CAN/RS-485"
+    fields:
+      pair_count: 2
+      conductor_count: 4
+      gauge_awg: 22
+      twist_per_foot: 6
+      shield_type: "foil + braid"
+      impedance_ohm: 120
+
+  # ---------------------------------------------------------------------------
+  # ACCESSORIES
+  # ---------------------------------------------------------------------------
+
+  # Adhesive-lined heatshrink for environmental sealing
+  heatshrink_3_16:
+    primary_pn: "HS-3/16-BK"
+    manufacturer: "TE Connectivity"
+    mpn: "ATUM-3/16-0-STK"
+    description: "Adhesive heatshrink 3/16\" black, 4:1 ratio"
+    fields:
+      expanded_dia_in: 0.1875
+      recovered_dia_in: 0.046
+      shrink_ratio: "4:1"
+      adhesive: true
+      color: "black"
+
+  heatshrink_1_4:
+    primary_pn: "HS-1/4-BK"
+    manufacturer: "TE Connectivity"
+    mpn: "ATUM-1/4-0-STK"
+    description: "Adhesive heatshrink 1/4\" black, 4:1 ratio"
+    fields:
+      expanded_dia_in: 0.25
+      recovered_dia_in: 0.062
+      shrink_ratio: "4:1"
+      adhesive: true
+      color: "black"
+
+  # Wire labels
+  label_wrap:
+    primary_pn: "LBL-WRAP-1"
+    manufacturer: "Brady"
+    mpn: "WML-311-292"
+    description: "Self-laminating wire marker, 1\" x 0.5\""
+    fields:
+      type: "self-laminating"
+      width_in: 1.0
+      height_in: 0.5
+
+  # Deutsch wedgelock (required for DT connectors)
+  wedgelock_dt04_4:
+    primary_pn: "WL-DT-4"
+    manufacturer: "Deutsch"
+    mpn: "W4P"
+    description: "Wedgelock for DT04-4P"
+    fields:
+      positions: 4
+
+  # Deutsch contact for 16-20 AWG wire
+  contact_dt_16_20:
+    primary_pn: "CONT-DT-16-20"
+    manufacturer: "Deutsch"
+    mpn: "0462-201-16141"
+    description: "Size 16 socket contact, 16-20 AWG, nickel"
+    fields:
+      size: 16
+      wire_range_awg: "16-20"
+      plating: "nickel"
+
+# -----------------------------------------------------------------------------
+# CONNECTORS SECTION
+# -----------------------------------------------------------------------------
+# Defines connector instances used in this harness.
+# Each connector references a part from the parts library and adds
+# instance-specific details like pin labels and designators.
+#
+connectors:
+  # ECU Connector - Main interface to the ECU
+  # This is where all sensor signals converge
+  J1:
+    part: conn_minifit_4pos
+    type: "receptacle"
+    subtype: "Mini-Fit Jr"
+    pincount: 4
+    pinlabels:
+      - "CAN_H"      # Pin 1
+      - "CAN_L"      # Pin 2
+      - "SENS_PWR"   # Pin 3
+      - "SENS_GND"   # Pin 4
+    # Detailed pin definitions (optional, for enhanced documentation)
+    pins:
+      1:
+        label: "CAN_H"
+        function: "CAN Bus High"
+        signal_type: "differential"
+      2:
+        label: "CAN_L"
+        function: "CAN Bus Low"
+        signal_type: "differential"
+      3:
+        label: "SENS_PWR"
+        function: "Sensor Power"
+        signal_type: "power"
+        voltage: "+12V"
+      4:
+        label: "SENS_GND"
+        function: "Sensor Ground"
+        signal_type: "ground"
+    # Additional components attached to this connector
+    additional_components:
+      - type: "backshell"
+        part: "SHELL-MF-4"
+        quantity: 1
+
+  # Temperature Sensor Connector
+  P1:
+    part: conn_deutsch_dt04_2p
+    type: "plug"
+    subtype: "DT Series"
+    pincount: 2
+    pinlabels:
+      - "TEMP_SIG"
+      - "TEMP_GND"
+    pins:
+      1:
+        label: "TEMP_SIG"
+        function: "Temperature Signal"
+        signal_type: "analog"
+        voltage: "0-5V"
+      2:
+        label: "TEMP_GND"
+        function: "Signal Ground"
+        signal_type: "ground"
+    additional_components:
+      - type: "wedgelock"
+        part: wedgelock_dt04_4
+        quantity: 1
+      - type: "contact"
+        part: contact_dt_16_20
+        quantity: 2
+
+  # Pressure Sensor Connector
+  P2:
+    part: conn_deutsch_dt04_4p
+    type: "plug"
+    subtype: "DT Series"
+    pincount: 4
+    pinlabels:
+      - "PRES_H"
+      - "PRES_L"
+      - "PRES_PWR"
+      - "PRES_GND"
+    pins:
+      1:
+        label: "PRES_H"
+        function: "Pressure CAN High"
+        signal_type: "differential"
+      2:
+        label: "PRES_L"
+        function: "Pressure CAN Low"
+        signal_type: "differential"
+      3:
+        label: "PRES_PWR"
+        function: "Sensor Power"
+        signal_type: "power"
+        voltage: "+12V"
+      4:
+        label: "PRES_GND"
+        function: "Sensor Ground"
+        signal_type: "ground"
+
+  # Speed Sensor Connector
+  P3:
+    part: conn_deutsch_dt04_2p
+    type: "plug"
+    subtype: "DT Series"
+    pincount: 2
+    pinlabels:
+      - "SPEED_SIG"
+      - "SPEED_GND"
+
+# -----------------------------------------------------------------------------
+# CABLES SECTION
+# -----------------------------------------------------------------------------
+# Defines cable instances with their core (conductor) specifications.
+#
+# Each cable must specify:
+#   - part: Reference to parts library
+#   - wirecount: Number of conductors
+#   - gauge: Wire gauge (AWG or mm^2)
+#   - length: Cable length with unit
+#   - cores: List of conductor definitions
+#
+# Cores can include:
+#   - index: Core position (1-based)
+#   - color: Wire color code
+#   - label: Signal name
+#   - pair_group: For twisted pairs
+#   - twist_spec: Twist specification
+#
+cables:
+  # CAN Bus Cable - From ECU to Pressure Sensor
+  # Uses twisted pair for noise immunity
+  W1:
+    part: cable_2pr_twisted
+    wirecount: 4
+    gauge: "22 AWG"
+    length: "450mm"
+    shield: "foil + braid, drain wire"
+    notes: "Route away from high-current cables"
+    cores:
+      # Twisted Pair 1 - CAN Bus
+      - index: 1
+        color: "WH"
+        label: "CAN_H"
+        pair_group: "P1"
+        twist_spec: "6 TPI"
+      - index: 2
+        color: "BU"
+        label: "CAN_L"
+        pair_group: "P1"
+        twist_spec: "6 TPI"
+      # Twisted Pair 2 - Power/Ground
+      - index: 3
+        color: "RD"
+        label: "SENS_PWR"
+        pair_group: "P2"
+      - index: 4
+        color: "BK"
+        label: "SENS_GND"
+        pair_group: "P2"
+      # Drain wire (shield termination)
+      - index: 5
+        color: "bare"
+        label: "DRAIN"
+
+  # Temperature Sensor Cable - Simple 2-conductor
+  W2:
+    part: cable_2c_power
+    wirecount: 2
+    gauge: "18 AWG"
+    length: "300mm"
+    cores:
+      - index: 1
+        color: "YE"
+        label: "TEMP_SIG"
+      - index: 2
+        color: "BK"
+        label: "TEMP_GND"
+
+  # Speed Sensor Cable - 2-conductor shielded
+  W3:
+    part: cable_4c_shielded
+    wirecount: 2
+    gauge: "22 AWG"
+    length: "600mm"
+    shield: "foil, drain wire"
+    notes: "Shield connected at ECU end only"
+    cores:
+      - index: 1
+        color: "GN-WH"
+        label: "SPEED_SIG"
+      - index: 2
+        color: "GN-BK"
+        label: "SPEED_GND"
+
+# -----------------------------------------------------------------------------
+# CONNECTIONS SECTION
+# -----------------------------------------------------------------------------
+# Defines the wiring matrix - which pins connect to which through which cables.
+#
+# Each connection specifies:
+#   - from_connector: Source connector designator
+#   - from_pin: Source pin number or label
+#   - cable: Cable designator
+#   - core: Core index in the cable
+#   - to_connector: Destination connector designator
+#   - to_pin: Destination pin number or label
+#   - notes: Assembly or routing notes (optional)
+#
+connections:
+  # CAN Bus connections (J1 to P2)
+  - from_connector: J1
+    from_pin: 1
+    cable: W1
+    core: 1
+    to_connector: P2
+    to_pin: 1
+    notes: "Maintain twist to connector"
+
+  - from_connector: J1
+    from_pin: 2
+    cable: W1
+    core: 2
+    to_connector: P2
+    to_pin: 2
+    notes: "Maintain twist to connector"
+
+  # Power/Ground to pressure sensor
+  - from_connector: J1
+    from_pin: 3
+    cable: W1
+    core: 3
+    to_connector: P2
+    to_pin: 3
+
+  - from_connector: J1
+    from_pin: 4
+    cable: W1
+    core: 4
+    to_connector: P2
+    to_pin: 4
+
+  # Shield drain wire - terminate at ECU end
+  - from_connector: J1
+    from_pin: 4
+    cable: W1
+    core: 5
+    to_connector: P2
+    to_pin: 4
+    notes: "Drain tied to GND at J1 only"
+
+  # Temperature sensor connections
+  - from_connector: J1
+    from_pin: 3
+    cable: W2
+    core: 1
+    to_connector: P1
+    to_pin: 1
+    notes: "Splice from SENS_PWR"
+
+  - from_connector: J1
+    from_pin: 4
+    cable: W2
+    core: 2
+    to_connector: P1
+    to_pin: 2
+
+  # Speed sensor connections
+  - from_connector: J1
+    from_pin: 3
+    cable: W3
+    core: 1
+    to_connector: P3
+    to_pin: 1
+
+  - from_connector: J1
+    from_pin: 4
+    cable: W3
+    core: 2
+    to_connector: P3
+    to_pin: 2
+
+# -----------------------------------------------------------------------------
+# ACCESSORIES SECTION
+# -----------------------------------------------------------------------------
+# Defines heatshrink, labels, conduit, and other accessories applied to the
+# harness during assembly.
+#
+# Each accessory specifies:
+#   - type: Category (heatshrink, label, conduit, tape, etc.)
+#   - part: Reference to parts library
+#   - quantity: Amount with optional unit
+#   - location: Where to apply (optional, for documentation)
+#
+accessories:
+  # Heatshrink at ECU connector
+  - type: "heatshrink"
+    part: heatshrink_1_4
+    quantity: "30mm"
+    location:
+      connector: J1
+      position: "breakout"
+      notes: "Apply at cable breakout, 15mm from connector"
+
+  # Heatshrink at each sensor connector
+  - type: "heatshrink"
+    part: heatshrink_3_16
+    quantity: "25mm"
+    location:
+      connector: P1
+      position: "entry"
+      notes: "Apply at cable entry to connector"
+
+  - type: "heatshrink"
+    part: heatshrink_3_16
+    quantity: "30mm"
+    location:
+      connector: P2
+      position: "entry"
+
+  - type: "heatshrink"
+    part: heatshrink_3_16
+    quantity: "25mm"
+    location:
+      connector: P3
+      position: "entry"
+
+  # Wire identification labels
+  - type: "label"
+    part: label_wrap
+    quantity: 4
+    location:
+      cable: W1
+      position: "both_ends"
+      text: "W1 - CAN/PWR"
+
+  - type: "label"
+    part: label_wrap
+    quantity: 2
+    location:
+      cable: W2
+      position: "both_ends"
+      text: "W2 - TEMP"
+
+  - type: "label"
+    part: label_wrap
+    quantity: 2
+    location:
+      cable: W3
+      position: "both_ends"
+      text: "W3 - SPEED"

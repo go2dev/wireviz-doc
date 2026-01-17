@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "wireviz-doc"
+version = "0.1.0"
+description = "WireViz-based harness documentation pipeline for generating factory-ready wiring documentation"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [
+    { name = "Your Name", email = "your.email@example.com" }
+]
+dependencies = [
+    "pyyaml>=6.0",
+    "pydantic>=2.0",
+    "jinja2>=3.0",
+    "lxml>=4.9",
+    "httpx>=0.24",
+    "beautifulsoup4>=4.12",
+    "cairosvg>=2.7",
+    "wireviz>=0.4",
+    "typer>=0.9",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.1",
+]
+
+[project.scripts]
+wvdoc = "wireviz_doc.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wireviz_doc"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "SIM"]
