@@ -258,6 +258,10 @@ MIT License - see [LICENSE](LICENSE) for details.
 - [Graphviz](https://graphviz.org/) - Graph visualization library
 - The open-source community for inspiration and tools
 
+## Authors
+
+Created by **[Go2Dev](https://github.com/go2dev)** / **[Whatever Together](https://whatevertogether.net)**
+
 ---
 
 **Need Help?** Open an [issue](https://github.com/go2dev/wireviz-doc/issues) or check the [documentation](docs/).

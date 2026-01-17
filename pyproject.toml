@@ -10,8 +10,9 @@ readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"
 authors = [
-    { name = "Your Name", email = "your.email@example.com" }
+    { name = "Go2Dev / Whatever Together" }
 ]
+keywords = ["wireviz", "wiring", "harness", "documentation", "cable", "connector"]
 dependencies = [
     "pyyaml>=6.0",
     "pydantic>=2.0",
@@ -23,6 +24,12 @@ dependencies = [
     "wireviz>=0.4",
     "typer[all]>=0.9",  # includes rich
 ]
+
+[project.urls]
+Homepage = "https://github.com/go2dev/wireviz-doc"
+Repository = "https://github.com/go2dev/wireviz-doc"
+Documentation = "https://github.com/go2dev/wireviz-doc#readme"
+"Whatever Together" = "https://whatevertogether.net"
 
 [project.optional-dependencies]
 dev = [
