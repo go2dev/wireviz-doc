@@ -256,7 +256,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 - [WireViz](https://github.com/formatc1702/WireViz) by @formatc1702 - The excellent diagram generation engine that powers this tool
 - [Graphviz](https://graphviz.org/) - Graph visualization library
-- The open-source community for inspiration and tools
 
 ---
 
